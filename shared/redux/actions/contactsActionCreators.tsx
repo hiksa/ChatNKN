@@ -6,6 +6,7 @@ declare var window: any;
 
 export const addContactAttempt = (payload: any) => {
   return (dispatch: Function, getState: Function) => {
+    debugger;
     const {userId, contact} = payload;
     const contactExists =
       getState().contacts.contacts[userId].filter(
@@ -14,6 +15,7 @@ export const addContactAttempt = (payload: any) => {
 
     if (contactExists) {
       // TODO: notify about existing contact
+      console.log('contact exists');
 
       return;
     }
@@ -26,16 +28,17 @@ export const addContactAttempt = (payload: any) => {
       payload,
     };
 
+    console.log('adding contact');
     window.nknClient
       .send(contact.userId, 'ADD_REQUEST')
       .then((x: any) => {
-        console.log('ADD_REQUEST response: ', x);
+        alert('ADD_REQUEST response: ' + x);
 
         action.payload.invitationReceived = true;
         dispatch(action);
       })
       .catch((e: any) => {
-        console.log('Catch: ', e);
+        alert('Catch: ' + e);
 
         dispatch(action);
       });

@@ -84,6 +84,13 @@ export const tabbedNavigation = () =>
                   title: {
                     text: 'Chat',
                   },
+                  rightButtons: [
+                    {
+                      id: 'myDynamicButton',
+                      text: 'connected',
+                      icon: require('../view/assets/images/connected.png'),
+                    },
+                  ],
                 },
                 bottomTab: {
                   fontSize: 12,
@@ -112,6 +119,13 @@ export const tabbedNavigation = () =>
                   title: {
                     text: 'Wallet',
                   },
+                  rightButtons: [
+                    {
+                      id: 'myDynamicButton',
+                      text: 'connected',
+                      icon: require('../view/assets/images/connected.png'),
+                    },
+                  ],
                 },
                 bottomTab: {
                   text: 'Wallet',
@@ -140,6 +154,13 @@ export const tabbedNavigation = () =>
                   title: {
                     text: 'Settings',
                   },
+                  rightButtons: [
+                    {
+                      id: 'myDynamicButton',
+                      text: 'connected',
+                      icon: require('../view/assets/images/connected.png'),
+                    },
+                  ],
                 },
                 bottomTab: {
                   text: 'Settings',

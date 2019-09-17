@@ -43,7 +43,6 @@ class Chat extends React.PureComponent<Props, State> {
       },
     };
 
-    console.log(payload);
     this.props.sendMessage(payload);
   }
 

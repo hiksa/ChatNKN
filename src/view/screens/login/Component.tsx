@@ -70,6 +70,7 @@ class Login extends React.PureComponent<Props, State> {
           size={'small'}
           placeholder={'Username'}
           onChangeText={(text: string) => this.setState({username: text})}
+          value={this.state.username}
         />
 
         <Input
@@ -77,6 +78,7 @@ class Login extends React.PureComponent<Props, State> {
           style={{marginTop: 10}}
           placeholder={'Password'}
           onChangeText={(text: string) => this.setState({password: text})}
+          value={this.state.password}
           secureTextEntry={true}
         />
 

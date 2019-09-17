@@ -7,24 +7,26 @@ const SCREENS = {
     Login: 'Login',
     Register: 'Register',
     Faucet: 'Faucet',
-    FaucetSuccess: 'FaucetSuccess'
+    FaucetSuccess: 'FaucetSuccess',
   },
 
   Tabs: {
     Home: 'Home',
     Chat: 'Chat',
     Settings: 'Settings',
-    Wallet: 'Wallet'
+    Wallet: 'Wallet',
   },
   Contacts: {
-    Add: 'AddContact'
+    Add: 'AddContact',
   },
-  
+
   Wallet: {
     Receive: 'WalletReceive',
     Send: 'WalletSend',
-    
-  }
+  },
+  Settings: {
+    Edit: 'EditProfile',
+  },
 };
 
-export { SCREENS };
+export {SCREENS};

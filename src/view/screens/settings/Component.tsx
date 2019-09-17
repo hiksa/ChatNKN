@@ -12,12 +12,15 @@ import {goToClaim} from '../../../navigators/navigation';
 import QRCode from 'react-native-qrcode-svg';
 import {Layout, Button} from 'react-native-ui-kitten';
 import {ScrollView} from 'react-native-gesture-handler';
+import {Navigation} from 'react-native-navigation';
+import {SCREENS} from '../../../constants/screen';
 
 export interface Props {
   navigation: any;
   logout: Function;
   userId: string;
   address: string;
+  componentId: string;
 }
 
 interface State {}
@@ -40,6 +43,23 @@ class Settings extends React.PureComponent<Props, State> {
 
   handleClaim = () => {
     goToClaim();
+  };
+
+  handleEdit = () => {
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: SCREENS.Settings.Edit,
+        options: {
+          topBar: {
+            drawBehind: false,
+            visible: true,
+            title: {
+              text: 'Edit Profile',
+            },
+          },
+        },
+      },
+    });
   };
 
   render() {
@@ -72,9 +92,14 @@ class Settings extends React.PureComponent<Props, State> {
           <Button
             appearance={'outline'}
             style={{marginTop: 30}}
-            title="Claim"
             onPress={this.handleClaim}>
             Claim NKN
+          </Button>
+          <Button
+            appearance={'outline'}
+            style={{marginTop: 20}}
+            onPress={this.handleEdit}>
+            Edit Profile
           </Button>
           <Button style={{marginTop: 30}} onPress={this.handleLogout}>
             Logout

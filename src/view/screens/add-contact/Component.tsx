@@ -35,7 +35,8 @@ interface State {
 }
 
 const publicKeyLength = 64;
-const allowedCharacters = '123456789abcdefABCDEF'.split('');
+const allowedCharacters = '0123456789abcdefABCDEF'.split('');
+console.log(allowedCharacters);
 
 class AddContact extends React.PureComponent<Props, State> {
   constructor(props: Props) {
@@ -97,11 +98,11 @@ class AddContact extends React.PureComponent<Props, State> {
     while (i--) {
       let current = text.charAt(i);
       if (!allowedCharacters.includes(current)) {
-        return false;
+        return true;
       }
     }
 
-    return true;
+    return false;
   };
 
   isAdded = (text: string) =>
@@ -180,18 +181,7 @@ class AddContact extends React.PureComponent<Props, State> {
         </Layout>
         <Text style={{marginBottom: 30}}>Scan contact id</Text>
         <View style={{padding: 10}}>
-          {/* <RNCamera
-            ref={ref => (this.camera = ref)}
-            style={{
-              flex: 1,
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              width: 250,
-            }}
-            // onBarCodeRead={this.onScan}
-          /> */}
-
-          <QRCodeScanner
+          {/* <QRCodeScanner
             onRead={this.onScan}
             // topContent={
             //   <Text style={styles.centerText}>
@@ -203,7 +193,7 @@ class AddContact extends React.PureComponent<Props, State> {
             //     <Text style={styles.buttonText}>OK. Got it!</Text>
             //   </TouchableOpacity>
             // }
-          />
+          /> */}
         </View>
       </Layout>
     );

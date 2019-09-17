@@ -15,20 +15,23 @@ export const sendMessage = (payload: any) => {
   return (dispatch: Function, getState: Function) => {
     const client = window.nknClient;
     const {chatId, message} = payload;
+    const action = {
+      type: ACTION_TYPES.CHAT.ADD_MESSAGE,
+      payload,
+    };
 
     client
       .send(chatId, MESSAGE_TYPES.CHAT.MESSAGE + message.text)
-      .then((x: any) => {
+      .then(function(x: any) {
+        alert(x);
         console.log('chat message response', x);
+        dispatch(action);
       })
       .catch((e: any) => {
+        alert(e);
         console.log('chat message error', e);
+        dispatch(action);
       });
-
-    dispatch({
-      type: ACTION_TYPES.CHAT.ADD_MESSAGE,
-      payload,
-    });
   };
 };
 

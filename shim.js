@@ -24,3 +24,9 @@ if (typeof localStorage !== 'undefined') {
 // If using the crypto shim, uncomment the following line to ensure
 // crypto is loaded first, so it can populate global.crypto
 //require('crypto');
+
+// if (!Uint8Array.prototype.slice) {
+//   Uint8Array.prototype.slice = function slice(start, end) {
+//     return new Uint8Array(Array.prototype.slice.call(this, start, end));
+//   };
+// }

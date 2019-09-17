@@ -235,7 +235,7 @@ class WalletSend extends React.PureComponent<Props, State> {
               ),
               second: () => (
                 <View>
-                  <QRCodeScanner
+                  {/* <QRCodeScanner
                     onRead={this.onScan}
                     // topContent={
                     //   <Text style={styles.centerText}>
@@ -247,7 +247,7 @@ class WalletSend extends React.PureComponent<Props, State> {
                     //     <Text style={styles.buttonText}>OK. Got it!</Text>
                     //   </TouchableOpacity>
                     // }
-                  />
+                  /> */}
                 </View>
               ),
             })}

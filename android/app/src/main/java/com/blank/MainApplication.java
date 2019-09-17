@@ -26,44 +26,38 @@ import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.react.NavigationReactNativeHost;
 import com.reactnativenavigation.react.ReactGateway;
 
+import com.github.wumke.RNLocalNotifications.RNLocalNotificationsPackage;
+
 import java.util.List;
 import java.util.Arrays;
 
 public class MainApplication extends NavigationApplication {
 
-  @Override
-  protected ReactGateway createReactGateway() {
-      ReactNativeHost host = new NavigationReactNativeHost(this, isDebug(), createAdditionalReactPackages()) {
-          @javax.annotation.Nullable
-          @Override
-          protected String getJSBundleFile() {
-              return "index";
-          }
-      };
-      return new ReactGateway(this, isDebug(), host);
-  }
+    @Override
+    protected ReactGateway createReactGateway() {
+        ReactNativeHost host = new NavigationReactNativeHost(this, isDebug(), createAdditionalReactPackages()) {
+            @javax.annotation.Nullable
+            @Override
+            protected String getJSBundleFile() {
+                return "index";
+            }
+        };
+        return new ReactGateway(this, isDebug(), host);
+    }
 
-  @Override
-  public boolean isDebug() {
-      return BuildConfig.DEBUG;
-  }
+    @Override
+    public boolean isDebug() {
+        return BuildConfig.DEBUG;
+    }
 
-  protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-              new RandomBytesPackage(),
-              new RNGestureHandlerPackage(),
-              new RNCWebViewPackage(),
-              new ReanimatedPackage(),   
-              new RNCameraPackage(),           
-              new SvgPackage(),
-              new AsyncStoragePackage()
-            );
-              
-       //       new AsyncStoragePackage(),
-      
-  }
-  @Override
-  public List<ReactPackage> createAdditionalReactPackages() {
-      return getPackages();
-  }
+    protected List<ReactPackage> getPackages() {
+        return Arrays.<ReactPackage>asList(new RandomBytesPackage(), new RNGestureHandlerPackage(),
+                new RNCWebViewPackage(), new ReanimatedPackage(), new RNCameraPackage(), new SvgPackage(),
+                new AsyncStoragePackage(), new RNLocalNotificationsPackage());
+    }
+
+    @Override
+    public List<ReactPackage> createAdditionalReactPackages() {
+        return getPackages();
+    }
 }
