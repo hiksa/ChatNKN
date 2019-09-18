@@ -225,8 +225,8 @@ class WalletSend extends React.PureComponent<Props, State> {
                           handleClick={this.selectContact}
                           username={item.username}
                           userId={item.address}
-                          lastMessageText={'contents of last message'}
-                          lastMessageSent={'9 hours ago'}
+                          lastMessageText={item.lastMessageText}
+                          lastMessageSent={item.lastMessageSent}
                         />
                       )}
                     />

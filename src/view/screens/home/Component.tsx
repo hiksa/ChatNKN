@@ -107,6 +107,7 @@ class Home extends React.PureComponent<Props, State> {
                 userId={item.userId}
                 lastMessageSent={item.lastMessageSent}
                 lastMessageText={item.lastMessageText}
+                hasUnreadMessages={item.hasUnreadMessages}
               />
             )}
           />

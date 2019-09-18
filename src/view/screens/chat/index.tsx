@@ -1,6 +1,9 @@
 import {connect} from 'react-redux';
 import Component from './Component';
-import {sendMessage} from '../../../../shared/redux/actions/chatActionCreators';
+import {
+  sendMessage,
+  seeMessage,
+} from '../../../../shared/redux/actions/chatActionCreators';
 
 const mapStateToProps = (state: any, ownProps: any) => {
   const {userId} = state.auth.currentUser;
@@ -21,6 +24,7 @@ const mapStateToProps = (state: any, ownProps: any) => {
 const mapDispatchToProps = (dispatch: any) => {
   return {
     sendMessage: (payload: any) => dispatch(sendMessage(payload)),
+    seeMessage: (payload: any) => dispatch(seeMessage(payload)),
   };
 };
 

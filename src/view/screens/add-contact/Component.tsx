@@ -30,6 +30,7 @@ export interface Props {
 
 interface State {
   contactId: string;
+  nickname: string;
   caption: string;
   status: string;
 }
@@ -45,6 +46,7 @@ class AddContact extends React.PureComponent<Props, State> {
     console.log(props);
     this.state = {
       contactId: '',
+      nickname: '',
       caption: '',
       status: '',
     };
@@ -58,7 +60,7 @@ class AddContact extends React.PureComponent<Props, State> {
     if (this.state.contactId.length == publicKeyLength) {
       this.props.addContact(this.props.userId, {
         userId: this.state.contactId,
-        username: this.state.contactId,
+        username: this.state.nickname,
       });
     } else {
       // TODO: Invalid user id
@@ -156,6 +158,15 @@ class AddContact extends React.PureComponent<Props, State> {
                 caption: this.getCaption(lowered),
               });
             }}
+            value={this.state.contactId}
+          />
+
+          <Input
+            size={'small'}
+            caption={'Nickname is optional'}
+            placeholder={'Nickname'}
+            onChangeText={(text: string) => this.setState({nickname: text})}
+            value={this.state.nickname}
           />
 
           <View

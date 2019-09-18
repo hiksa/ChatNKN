@@ -72,6 +72,27 @@ export default (state: State = initialState, action: any) => {
       };
     }
 
+    case ACTION_TYPES.CHAT.ADD_MESSAGE: {
+      const {chatId, message, userId} = action.payload;
+      const existingContact = state.contacts[userId].find(
+        x => x.userId == chatId,
+      );
+
+      return {
+        contacts: {
+          ...state.contacts,
+          [userId]: [
+            ...state.contacts[userId].filter((x: any) => x.userId != chatId),
+            {
+              ...existingContact,
+              lastMessageText: message.text,
+              lastMessageSent: message.createdAt,
+            },
+          ],
+        },
+      };
+    }
+
     default:
       return state;
   }

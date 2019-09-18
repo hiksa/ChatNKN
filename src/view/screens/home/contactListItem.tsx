@@ -9,6 +9,7 @@ export interface Props {
   handleClick: Function;
   lastMessageText: string;
   lastMessageSent: string;
+  hasUnreadMessages: boolean;
 }
 
 interface State {
@@ -30,11 +31,19 @@ export default class ContactListItem extends React.Component<Props, State> {
   }
 
   render() {
+    const {
+      username,
+      hasUnreadMessages,
+      lastMessageSent,
+      lastMessageText,
+    } = this.props;
     return (
       <ListItem
         onPress={this.handleOnClick}
-        title={this.props.username.substr(0, 30) + '...'}
-        description={`${this.props.lastMessageSent} - ${this.props.lastMessageText}`}
+        title={username}
+        description={`${hasUnreadMessages ? 'u -' : ''}${
+          lastMessageSent ? Date.parse(lastMessageSent) : 'no messages'
+        } - ${lastMessageText ? lastMessageText : ''}`}
         icon={() => (
           <Avatar source={require('../../assets/images/avatar.png')} />
         )}

@@ -6,7 +6,6 @@ declare var window: any;
 
 export const addContactAttempt = (payload: any) => {
   return (dispatch: Function, getState: Function) => {
-    debugger;
     const {userId, contact} = payload;
     const contactExists =
       getState().contacts.contacts[userId].filter(
@@ -15,33 +14,36 @@ export const addContactAttempt = (payload: any) => {
 
     if (contactExists) {
       // TODO: notify about existing contact
-      console.log('contact exists');
+      console.error('contact exists');
 
+      return;
+    }
+
+    const isSelf = userId == contact.userId;
+    if (isSelf) {
+      console.error('cannot add urself as a friend');
       return;
     }
 
     payload.isConfirmed = false;
     payload.invitationReceived = false;
 
+    console.log('adding contact');
+    window.nknClient
+      .send(contact.userId, 'ADD_REQUEST')
+      .then((x: any) => {
+        // alert('ADD_REQUEST response: ' + x);
+      })
+      .catch((e: any) => {
+        alert('Catch: ' + e);
+      });
+
     const action = {
       type: ACTION_TYPES.CONTACTS.ADD_CONTACT_ATTEMPT,
       payload,
     };
 
-    console.log('adding contact');
-    window.nknClient
-      .send(contact.userId, 'ADD_REQUEST')
-      .then((x: any) => {
-        alert('ADD_REQUEST response: ' + x);
-
-        action.payload.invitationReceived = true;
-        dispatch(action);
-      })
-      .catch((e: any) => {
-        alert('Catch: ' + e);
-
-        dispatch(action);
-      });
+    dispatch(action);
 
     tabbedNavigation();
   };

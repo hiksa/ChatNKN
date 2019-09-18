@@ -11,11 +11,13 @@ import {SCREENS} from '../../../src/constants/screen';
 import {Navigation} from 'react-native-navigation';
 import RNLocalNotifications from 'react-native-local-notifications';
 import {setBalance, confirmTransaction} from './walletActionCreators';
-import {receiveMessage} from './chatActionCreators';
+import {receiveMessage, markReceived} from './chatActionCreators';
 import {Decimal} from 'decimal.js';
 import configs from '../../misc/configs';
 
 const nknClient = require('nkn-client');
+
+const msgpack = require('msgpack-lite');
 
 declare var window: any;
 
@@ -39,7 +41,7 @@ const initializeClient = (
   const client = nknClient({
     seed: seed,
     seedRpcServerAddr: seedNode,
-    responseTimeout: 100,
+    responseTimeout: 5,
     numSubClients: 5,
     originalClient: false,
   });
@@ -58,38 +60,30 @@ const initializeClient = (
   client.on(
     'message',
     (fromUserId: any, message: any, payloadType: any, isEncrypted: boolean) => {
+      //alert(fromUserId);
       // alert(`message, fromUserId: ${fromUserId}, message: ${message}`);
       if (payloadType == nknClient.PayloadType.TEXT) {
-        if (message.startsWith(MESSAGE_TYPES.CHAT.MESSAGE)) {
-          const messageContents = message.substr(
-            MESSAGE_TYPES.CHAT.MESSAGE.length,
-          );
-
+      } else if (payloadType == nknClient.PayloadType.BINARY) {
+        const decoded = msgpack.decode(message);
+        if (decoded.type == MESSAGE_TYPES.CHAT.MESSAGE) {
+          const messageContents = decoded.text;
           const payload = {
             text: messageContents,
             createdAt: new Date(),
             user: {
               _id: fromUserId,
             },
-            _id: create_UUID(),
+            _id: decoded._id,
           };
 
           dispatch(receiveMessage(payload));
           return 'well received';
-        } else if (message.startsWith(MESSAGE_TYPES.CONTACT.ADD)) {
-          const username = message.substr(MESSAGE_TYPES.CONTACT.ADD.length);
-          const payload = {
-            username: username,
-            userId: fromUserId,
-            date: new Date(),
-          };
+        } else if (decoded.type == MESSAGE_TYPES.CHAT.MESSAGE_SEEN) {
+          const messageId = decoded._id;
+          const chatId = fromUserId;
+          const payload = {chatId, messageId, userId: publicKey};
 
-          // TODO: Dispatch action
-          return 'well received';
-        } else if (message.startsWith(MESSAGE_TYPES.CONTACT.ACCEPT)) {
-          // TODO: Friend request accepted
-        } else if (message.startsWith(MESSAGE_TYPES.CONTACT.DECLINE)) {
-          // TODO: Friend request declined
+          dispatch(markReceived(payload));
         }
       }
     },

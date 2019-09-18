@@ -6,7 +6,10 @@ import store from '../../shared/redux/store';
 import {registerScreens} from '../view/screens';
 import {showSplash} from './navigation';
 
-// import { purgeStorage, rehydrateStore } from '../../shared/redux/actions/actionCreators';
+import {
+  purgeStorage,
+  rehydrateStore,
+} from '../../shared/redux/actions/actionCreators';
 
 declare var global: any;
 
@@ -25,7 +28,7 @@ const app = () => {
 
     console.log('initiating app');
     // Decimal.set({toExpPos: 20});
-    // store.dispatch(purgeStorage());
+    //  store.dispatch(purgeStorage());
     setTimeout(showSplash, 0);
     // showSplash();
   });
