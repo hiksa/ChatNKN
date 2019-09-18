@@ -161,7 +161,8 @@ class WalletSend extends React.PureComponent<Props, State> {
                   </Button>
 
                   <Button
-                    status={'info'}
+                    status={'primary'}
+                    appearance={'outline'}
                     size={'small'}
                     style={{height: 30, marginRight: 10}}
                     labelStyle={{fontSize: 10}}

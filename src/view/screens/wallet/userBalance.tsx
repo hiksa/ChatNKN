@@ -3,6 +3,7 @@ import * as React from 'react';
 import {Text, Layout} from 'react-native-ui-kitten';
 import {CText} from '../../elements/custom';
 import Clipboard from '@react-native-community/react-native-clipboard';
+import Toast from 'react-native-root-toast';
 
 export interface Props {
   address: string;
@@ -19,6 +20,11 @@ export default class UserBalance extends React.Component<Props, State> {
   copyAddress = () => {
     console.log(this.props.address);
     Clipboard.setString(this.props.address);
+
+    Toast.show('Address copied to clipboard.', {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.TOP,
+    });
   };
 
   render() {

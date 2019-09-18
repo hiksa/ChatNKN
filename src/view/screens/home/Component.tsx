@@ -35,7 +35,7 @@ class Home extends React.PureComponent<Props, State> {
     //  this.props.purge();
   }
 
-  openChat = (id: string) => {
+  openChat = (id: string, username: string) => {
     Navigation.push(this.props.componentId, {
       component: {
         name: SCREENS.Tabs.Chat,
@@ -47,7 +47,7 @@ class Home extends React.PureComponent<Props, State> {
             visible: true,
             drawBehind: false,
             title: {
-              text: id,
+              text: username,
             },
           },
           bottomTabs: {

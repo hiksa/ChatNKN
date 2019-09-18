@@ -14,6 +14,7 @@ import {Layout, Button} from 'react-native-ui-kitten';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Navigation} from 'react-native-navigation';
 import {SCREENS} from '../../../constants/screen';
+import Toast from 'react-native-root-toast';
 
 export interface Props {
   navigation: any;
@@ -38,6 +39,11 @@ class Settings extends React.PureComponent<Props, State> {
 
   handleCopyUserId = (e: any) => {
     Clipboard.setString(this.props.userId);
+    Toast.show('Id copied to clipboard.', {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.TOP,
+    });
+
     return true;
   };
 
@@ -66,20 +72,21 @@ class Settings extends React.PureComponent<Props, State> {
     return (
       <ScrollView style={{flex: 1}}>
         <Layout style={{padding: 20}}>
-          <Layout
-            level={'3'}
-            style={{padding: 20, paddingBottom: 50}}
-            onStartShouldSetResponder={this.handleCopyUserId}>
-            <Text style={{textAlign: 'center'}}>{this.props.userId}</Text>
-            <Text
-              style={{
-                marginTop: 10,
-                fontSize: 12,
-                fontStyle: 'italic',
-                textAlign: 'center',
-              }}>
-              tap to copy User Id
-            </Text>
+          <Layout level={'3'} style={{padding: 20, paddingBottom: 50}}>
+            <Layout
+              level={'3'}
+              onStartShouldSetResponder={this.handleCopyUserId}>
+              <Text style={{textAlign: 'center'}}>{this.props.userId}</Text>
+              <Text
+                style={{
+                  marginTop: 10,
+                  fontSize: 12,
+                  fontStyle: 'italic',
+                  textAlign: 'center',
+                }}>
+                tap to copy User Id
+              </Text>
+            </Layout>
             <View
               style={{
                 justifyContent: 'center',
