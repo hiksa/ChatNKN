@@ -11,7 +11,7 @@ const mapStateToProps = (state: any) => {
     }
 };
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: Function) => {
     return {
         purge: () => dispatch(purgeStorage()),
         attemptClaim: (payload: any) => dispatch(claimAttempt(payload)),

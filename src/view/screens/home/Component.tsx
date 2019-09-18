@@ -6,10 +6,8 @@ import store, {persistor} from '../../../../shared/redux/store';
 import {List, ListItem, Button, Text, Layout} from 'react-native-ui-kitten';
 
 import styles from './styles';
-import {CText} from '../../elements/custom';
 import {SCREENS} from '../../../constants/screen';
 import {Navigation} from 'react-native-navigation';
-import {BUTTON_DEFAULT} from '../../elements/buttons';
 import ContactListItem from './contactListItem';
 
 declare var window: any;

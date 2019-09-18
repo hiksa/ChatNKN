@@ -1,6 +1,6 @@
 import {ACTION_TYPES} from '../constants/actionTypes';
 
-interface State {
+export interface State {
   isLoading: boolean;
   activeChatId: string;
   chats: {
@@ -14,7 +14,7 @@ const initialState: State = {
   chats: {},
 };
 
-export default (state = initialState, action: any) => {
+export default (state = initialState, action: any): State => {
   switch (action.type) {
     case ACTION_TYPES.CHAT.MESSAGE_SEEN: {
       debugger;

@@ -37,7 +37,6 @@ interface State {
 
 const publicKeyLength = 64;
 const allowedCharacters = '0123456789abcdefABCDEF'.split('');
-console.log(allowedCharacters);
 
 class AddContact extends React.PureComponent<Props, State> {
   constructor(props: Props) {
@@ -141,6 +140,15 @@ class AddContact extends React.PureComponent<Props, State> {
     return false;
   }
 
+  handleContactIdChangeText = (text: string) => {
+    const lowered = text.toLowerCase();
+    this.setState({
+      contactId: lowered,
+      status: this.getStatus(lowered),
+      caption: this.getCaption(lowered),
+    });
+  };
+
   render() {
     return (
       <Layout style={[{flex: 1, padding: 20}]}>
@@ -150,14 +158,7 @@ class AddContact extends React.PureComponent<Props, State> {
             caption={this.state.caption}
             status={this.state.status}
             placeholder={'Contact Id'}
-            onChangeText={(text: string) => {
-              const lowered = text.toLowerCase();
-              this.setState({
-                contactId: lowered,
-                status: this.getStatus(lowered),
-                caption: this.getCaption(lowered),
-              });
-            }}
+            onChangeText={this.handleContactIdChangeText}
             value={this.state.contactId}
           />
 
@@ -169,13 +170,7 @@ class AddContact extends React.PureComponent<Props, State> {
             value={this.state.nickname}
           />
 
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              marginTop: 20,
-              marginBottom: 20,
-            }}>
+          <View style={styles.buttonsContainer}>
             <Button
               size={'medium'}
               disabled={this.getAddButtonDisabled}
@@ -228,6 +223,12 @@ const styles = StyleSheet.create({
   },
   buttonTouchable: {
     padding: 16,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
+    marginBottom: 20,
   },
 });
 

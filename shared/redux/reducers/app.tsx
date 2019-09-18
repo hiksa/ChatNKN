@@ -1,11 +1,16 @@
-import { ACTION_TYPES } from '../constants/actionTypes';
+import {ACTION_TYPES} from '../constants/actionTypes';
+
+export interface State {
+  isLoading: boolean;
+  faucetLoaded: boolean;
+}
 
 const initialState = {
   isLoading: false,
-  faucetLoaded: false
+  faucetLoaded: false,
 };
 
-export default (state = initialState, action: any) => {
+export default (state: State = initialState, action: any): State => {
   switch (action.type) {
     case ACTION_TYPES.SPLASH_LAUNCHED:
       return {
@@ -15,10 +20,10 @@ export default (state = initialState, action: any) => {
     case ACTION_TYPES.FAUCET.LOADED: {
       return {
         ...state,
-        faucetLoaded: true
+        faucetLoaded: true,
       };
     }
-    
+
     default:
       return state;
   }

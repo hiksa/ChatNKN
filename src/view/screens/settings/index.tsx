@@ -1,19 +1,19 @@
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import Component from './Component';
-import { logout } from '../../../../shared/redux/actions/authActionCreators';
+import {logout} from '../../../../shared/redux/actions/authActionCreators';
 
 const mapStateToProps = (state: any) => {
-  const { userId } = state.auth.currentUser;
+  const {userId} = state.auth.currentUser;
   return {
-    userId
-  }
-}
+    userId,
+  };
+};
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: Function) => {
   return {
-    logout: () => dispatch(logout())
-  }
+    logout: () => dispatch(logout()),
+  };
 };
 
 const settingsContainer = connect(

@@ -1,11 +1,12 @@
 import {connect} from 'react-redux';
 import Component from './Component';
 import {addContactAttempt} from '../../../../shared/redux/actions/contactsActionCreators';
+import {UserPayload} from '../../../../shared/models/payloads';
 
 const mapStateToProps = (state: any) => {
   const userId = state.auth.currentUser.userId;
   const existingContacts = state.contacts.contacts[userId].map(
-    (x: any) => x.userId,
+    (x: UserPayload) => x.userId,
   );
 
   return {
@@ -14,7 +15,7 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: Function) => {
   return {
     addContact: (userId: string, payload: any) => {
       let newPayload = {

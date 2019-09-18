@@ -1,6 +1,6 @@
 import {ACTION_TYPES} from '../constants/actionTypes';
 
-interface State {
+export interface State {
   isLoading: boolean;
   contacts: {
     [key: string]: any[];
@@ -12,7 +12,7 @@ const initialState: State = {
   contacts: {},
 };
 
-export default (state: State = initialState, action: any) => {
+export default (state: State = initialState, action: any): State => {
   switch (action.type) {
     case ACTION_TYPES.CONTACTS.ADD_CONTACT_ATTEMPT: {
       console.log('add contact attempt: ', action.payload);

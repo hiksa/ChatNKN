@@ -11,7 +11,7 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: Function) => {
   return {
     attemptSend: (payload: any, componentId: string) =>
       dispatch(sendAttempt(payload, componentId)),

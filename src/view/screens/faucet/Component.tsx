@@ -96,13 +96,13 @@ class Faucet extends React.PureComponent<Props, State> {
 
     return (
       <Layout style={{flex: 1, padding: 20}}>
-        <Text
+        {/* <Text
           category={'h3'}
           style={{
             textAlign: 'center',
           }}>
           Claim free NKN currency
-        </Text>
+        </Text> */}
 
         <RNRecaptcha siteKey={siteKey} onMessage={this.onMessage} url={url} />
       </Layout>

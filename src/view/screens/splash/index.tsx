@@ -1,14 +1,14 @@
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Component from './Component';
-import { initiateApp } from '../../../../shared/redux/actions/authActionCreators';
+import {initiateApp} from '../../../../shared/redux/actions/authActionCreators';
 
 const mapStateToProps = (state: any) => ({});
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: Function) => {
   return {
-    init: () => dispatch(initiateApp())
+    init: () => dispatch(initiateApp()),
     // init: () => console.log('init')
-  }
+  };
 };
 
 const splashContainer = connect(

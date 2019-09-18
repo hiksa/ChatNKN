@@ -14,6 +14,11 @@ import {setBalance, confirmTransaction} from './walletActionCreators';
 import {receiveMessage, markReceived} from './chatActionCreators';
 import {Decimal} from 'decimal.js';
 import configs from '../../misc/configs';
+import {
+  RegisterPayload,
+  LoginAttemptPayload,
+  UserPayload,
+} from '../../models/payloads';
 
 const nknClient = require('nkn-client');
 
@@ -59,9 +64,12 @@ const initializeClient = (
 
   client.on(
     'message',
-    (fromUserId: any, message: any, payloadType: any, isEncrypted: boolean) => {
-      //alert(fromUserId);
-      // alert(`message, fromUserId: ${fromUserId}, message: ${message}`);
+    (
+      fromUserId: string,
+      message: any,
+      payloadType: number,
+      isEncrypted: boolean,
+    ) => {
       if (payloadType == nknClient.PayloadType.TEXT) {
       } else if (payloadType == nknClient.PayloadType.BINARY) {
         const decoded = msgpack.decode(message);
@@ -153,12 +161,13 @@ export const initiateApp = () => {
   };
 };
 
-export const loginAttempt = (payload: any) => {
+export const loginAttempt = (payload: LoginAttemptPayload) => {
   return (dispatch: Function, getState: Function) => {
     const authState = getState().auth;
     const savedUser = authState.savedUsers.find(
       (x: any) => x.username == payload.username,
     );
+
     if (savedUser) {
       try {
         const wallet = nknWallet.loadJsonWallet(
@@ -179,7 +188,7 @@ export const loginAttempt = (payload: any) => {
   };
 };
 
-export const loginSuccess = (payload: any) => {
+export const loginSuccess = (payload: UserPayload) => {
   return {
     type: ACTION_TYPES.AUTH.LOGIN_SUCCESS,
     payload,
@@ -193,7 +202,7 @@ export const loginFail = (payload: any) => {
   };
 };
 
-export const register = (payload: any, ownProps: any) => {
+export const register = (payload: RegisterPayload, ownProps: any) => {
   return (dispatch: Function, getState: Function) => {
     const authState = getState().auth;
     const userExists =
@@ -231,7 +240,7 @@ export const registerSuccess = (payload: any) => {
   };
 };
 
-export const registerFail = (payload: any) => {
+export const registerFail = (payload: RegisterPayload) => {
   return {
     type: ACTION_TYPES.AUTH.REGISTER_FAIL,
     payload,
