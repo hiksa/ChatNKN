@@ -12,6 +12,7 @@ import {Navigation} from 'react-native-navigation';
 import RNLocalNotifications from 'react-native-local-notifications';
 import {setBalance, confirmTransaction} from './walletActionCreators';
 import {receiveMessage, markReceived} from './chatActionCreators';
+import {addContactSuccess} from './contactsActionCreators';
 import {Decimal} from 'decimal.js';
 import configs from '../../misc/configs';
 import {
@@ -73,25 +74,42 @@ const initializeClient = (
       if (payloadType == nknClient.PayloadType.TEXT) {
       } else if (payloadType == nknClient.PayloadType.BINARY) {
         const decoded = msgpack.decode(message);
-        if (decoded.type == MESSAGE_TYPES.CHAT.MESSAGE) {
-          const messageContents = decoded.text;
-          const payload = {
-            text: messageContents,
-            createdAt: new Date(),
-            user: {
-              _id: fromUserId,
-            },
-            _id: decoded._id,
-          };
+        switch (decoded.type) {
+          case MESSAGE_TYPES.CHAT.MESSAGE: {
+            const messageContents = decoded.text;
+            const payload = {
+              text: messageContents,
+              createdAt: new Date(),
+              user: {
+                _id: fromUserId,
+              },
+              _id: decoded._id,
+            };
 
-          dispatch(receiveMessage(payload));
-          return 'well received';
-        } else if (decoded.type == MESSAGE_TYPES.CHAT.MESSAGE_SEEN) {
-          const messageId = decoded._id;
-          const chatId = fromUserId;
-          const payload = {chatId, messageId, userId: publicKey};
+            dispatch(receiveMessage(payload));
+            return 'well received';
+          }
 
-          dispatch(markReceived(payload));
+          case MESSAGE_TYPES.CHAT.MESSAGE_SEEN: {
+            const messageId = decoded._id;
+            const chatId = fromUserId;
+            const payload = {chatId, messageId, userId: publicKey};
+            dispatch(markReceived(payload));
+            break;
+          }
+
+          case MESSAGE_TYPES.CONTACT.ADD: {
+            break;
+          }
+
+          case MESSAGE_TYPES.CONTACT.ACCEPT: {
+            dispatch(addContactSuccess({}));
+
+            break;
+          }
+
+          default:
+            break;
         }
       }
     },
@@ -143,7 +161,6 @@ export const logout = () => {
 export const initiateApp = () => {
   return (dispatch: Function, getState: Function) => {
     const {currentUser, savedUsers} = getState().auth;
-
     if (currentUser.userId) {
       const wallet = nknWallet.loadJsonWallet(
         currentUser.walletJSON,
@@ -162,7 +179,7 @@ export const initiateApp = () => {
 };
 
 export const loginAttempt = (payload: LoginAttemptPayload) => {
-  return (dispatch: Function, getState: Function) => {
+  return (dispatch: Function, getState: Function) => {    
     const authState = getState().auth;
     const savedUser = authState.savedUsers.find(
       (x: any) => x.username == payload.username,
@@ -205,9 +222,10 @@ export const loginFail = (payload: any) => {
 export const register = (payload: RegisterPayload, ownProps: any) => {
   return (dispatch: Function, getState: Function) => {
     const authState = getState().auth;
-    const userExists =
-      authState.savedUsers.filter((x: any) => x.username == payload.username)
-        .length != 0;
+    const userExists = authState.savedUsers.some(
+      (x: any) => x.username == payload.username,
+    );
+
     if (userExists) {
       dispatch(registerFail(payload));
     } else {

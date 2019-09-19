@@ -15,7 +15,6 @@ export const addContactAttempt = (payload: any) => {
     if (contactExists) {
       // TODO: notify about existing contact
       console.error('contact exists');
-
       return;
     }
 
@@ -32,22 +31,37 @@ export const addContactAttempt = (payload: any) => {
     window.nknClient
       .send(contact.userId, 'ADD_REQUEST')
       .then((x: any) => {
-        // alert('ADD_REQUEST response: ' + x);
+        const deliveredAction = {
+          type: ACTION_TYPES.CONTACTS.ADD_CONTACT_ATTEMPT_DELIVERED,
+          payload: {
+            userId: userId,
+            contactId: contact.userId,
+          },
+        };
+
+        dispatch(deliveredAction);
       })
       .catch((e: any) => {
         alert('Catch: ' + e);
       });
 
-    const action = {
+    const attemptAction = {
       type: ACTION_TYPES.CONTACTS.ADD_CONTACT_ATTEMPT,
       payload,
     };
 
-    dispatch(action);
+    dispatch(attemptAction);
 
     tabbedNavigation();
   };
 };
+
+export const addContactSuccess = (payload: any) => {
+  return {
+    type: ACTION_TYPES.CONTACTS.ADD_CONTACT_SUCCESS,
+    payload: payload
+  };
+}
 
 export const removeContact = (payload: any) => {
   return {

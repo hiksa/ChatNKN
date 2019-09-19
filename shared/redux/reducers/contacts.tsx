@@ -15,9 +15,9 @@ const initialState: State = {
 export default (state: State = initialState, action: any): State => {
   switch (action.type) {
     case ACTION_TYPES.CONTACTS.ADD_CONTACT_ATTEMPT: {
-      console.log('add contact attempt: ', action.payload);
       const {userId} = action.payload;
       return {
+        ...state,
         contacts: {
           ...state.contacts,
           [userId]: [
@@ -31,20 +31,29 @@ export default (state: State = initialState, action: any): State => {
       };
     }
 
+    case ACTION_TYPES.CONTACTS.ADD_CONTACT_ATTEMPT_DELIVERED: {
+      const {userId, contactId} = action.payload;
+      return {
+        ...state,
+        contacts: {
+          ...state.contacts,
+          [userId]: state.contacts[userId].map((x: any) =>
+            x.userId == contactId ? {...x, requestDelivered: true} : {...x},
+          ),
+        },
+      };
+    }
+
     case ACTION_TYPES.CONTACTS.ADD_CONTACT_SUCCESS: {
       const {userId, contactId} = action.payload;
-      const contact = state.contacts[userId].find(
-        (x: any) => x.id == contactId,
-      );
       return {
+        ...state,
         contacts: {
           ...state.contacts,
           [userId]: [
-            ...state.contacts[userId].filter((x: any) => x.id != contactId),
-            {
-              ...contact,
-              isPending: false,
-            },
+            ...state.contacts[userId].map((x: any) =>
+              x.id == contactId ? {...x, isPending: false} : {...x},
+            ),
           ],
         },
       };
@@ -74,20 +83,20 @@ export default (state: State = initialState, action: any): State => {
 
     case ACTION_TYPES.CHAT.ADD_MESSAGE: {
       const {chatId, message, userId} = action.payload;
-      const existingContact = state.contacts[userId].find(
-        x => x.userId == chatId,
-      );
+      const existingContact = state.contacts[userId]
+        .find(x => x.userId == chatId);
 
       return {
+        ...state,
         contacts: {
           ...state.contacts,
           [userId]: [
-            ...state.contacts[userId].filter((x: any) => x.userId != chatId),
             {
               ...existingContact,
               lastMessageText: message.text,
               lastMessageSent: message.createdAt,
             },
+            ...state.contacts[userId].filter((x: any) => x.userId != chatId),
           ],
         },
       };

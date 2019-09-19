@@ -18,12 +18,7 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (dispatch: Function) => {
   return {
     addContact: (userId: string, payload: any) => {
-      let newPayload = {
-        userId,
-        contact: payload,
-      };
-
-      dispatch(addContactAttempt(newPayload));
+      dispatch(addContactAttempt({userId, contact: payload}));
     },
   };
 };
