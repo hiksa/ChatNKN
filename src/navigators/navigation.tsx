@@ -62,8 +62,8 @@ export const showLoginScreen = () => {
 export const tabbedNavigation = () =>
   Navigation.setRoot({
     root: {
-      bottomTabs: {
-        id: 'BottomTabsId',
+      bottomTabs: {        
+        id: 'MainNav',
         children: [
           {
             stack: {
@@ -86,7 +86,7 @@ export const tabbedNavigation = () =>
                   },
                   rightButtons: [
                     {
-                      id: 'myDynamicButton',
+                      id: 'connectedIndicator',
                       text: 'connected',
                       icon: require('../view/assets/images/connected.png'),
                     },

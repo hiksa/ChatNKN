@@ -164,6 +164,7 @@ class AddContact extends React.PureComponent<Props, State> {
 
           <Input
             size={'small'}
+            style={{marginTop: 10}}
             caption={'Nickname is optional'}
             placeholder={'Nickname'}
             onChangeText={(text: string) => this.setState({nickname: text})}

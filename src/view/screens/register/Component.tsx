@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, Image, SafeAreaView, Button, TextInput} from 'react-native';
+import {View, Image, SafeAreaView, TextInput} from 'react-native';
 
 import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
@@ -8,7 +8,7 @@ import {tabbedNavigation} from '../../../navigators/navigation';
 import {BUTTON_DEFAULT} from '../../elements/buttons';
 import {CText} from '../../elements/custom';
 import store, {persistor} from '../../../../shared/redux/store';
-import {Layout, Text, Input} from 'react-native-ui-kitten';
+import {Layout, Text, Input, Button} from 'react-native-ui-kitten';
 
 export interface Props {
   register: Function;
@@ -43,8 +43,14 @@ class Register extends React.PureComponent<Props, State> {
 
   render() {
     return (
-      <Layout style={{padding: 20}}>
-        <Text style={{paddingBottom: 20, fontSize: 30, textAlign: 'center'}}>
+      <Layout style={{flex: 1, padding: 20}}>
+        <Text
+          style={{
+            paddingTop: 20,
+            paddingBottom: 20,
+            fontSize: 30,
+            textAlign: 'center',
+          }}>
           Register
         </Text>
 
@@ -55,12 +61,14 @@ class Register extends React.PureComponent<Props, State> {
         />
         <Input
           secureTextEntry={true}
+          style={{marginTop: 10}}
           placeholder={'Password'}
           onChangeText={(text: string) => this.setState({password: text})}
           value={this.state.password}
         />
         <Input
           secureTextEntry={true}
+          style={{marginTop: 10}}
           placeholder={'Repeat password'}
           onChangeText={(text: string) => this.setState({repeatPassword: text})}
           value={this.state.repeatPassword}

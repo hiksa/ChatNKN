@@ -17,16 +17,20 @@ import ActionButton from 'react-native-action-button';
 import {SCREENS} from '../../../constants/screen';
 import {Navigation} from 'react-native-navigation';
 import ContactListItem from './contactListItem';
+import PendingContactListItem from './pendingContactListItem';
 import {TYPOGRAPHY} from '../../styles/typography';
 
 declare var window: any;
 
 export interface Props {
   componentId: string;
-  name: string;
-  addContact: Function;
-  purge: Function;
+  userId: string;
   contacts: [];
+
+  addContact: Function;
+  acceptInvite: Function;
+  denyInvite: Function;
+  cancelInvitation: Function;
 }
 
 interface State {
@@ -90,55 +94,82 @@ class Home extends React.PureComponent<Props, State> {
     });
   };
 
+  acceptInvite = (userId: string) => {
+    this.props.acceptInvite({
+      userId: this.props.userId,
+      contactId: userId,
+      acceptedOn: new Date(),
+    });
+  };
+
+  denyInvite = (userId: string) => {
+    this.props.denyInvite({
+      userId: this.props.userId,
+      contactId: userId,
+    });
+  };
+
+  cancelInvitation = (userId: string) => {
+    this.props.cancelInvitation({
+      userId: this.props.userId,
+      contactId: userId,
+    });
+  };
+
   render() {
-    const {contacts} = this.props;
+    const contacts = this.props.contacts.filter((x: any) => !x.isPending);
     const pending = this.props.contacts.filter((x: any) => x.isPending);
     return (
-      <ScrollView
-        contentContainerStyle={{flexGrow: 1, justifyContent: 'space-between'}}
-        style={[styles.container]}>
-        <TabView
-          selectedIndex={this.state.selectedIndex}
-          onSelect={(index: number) => this.setState({selectedIndex: index})}>
-          <Tab title={`Contacts (${this.props.contacts.length})`}>
-            <FlatList
-              style={styles.list}
-              data={contacts}
-              keyExtractor={(item: any) => item.userId}
-              renderItem={({item}) => (
-                <ContactListItem
-                  handleClick={this.openChat}
-                  username={item.username}
-                  userId={item.userId}
-                  lastMessageSent={item.lastMessageSent}
-                  lastMessageText={item.lastMessageText}
-                  hasUnreadMessages={item.hasUnreadMessages}
-                />
-              )}
-            />
-          </Tab>
-          <Tab title={`Pending (${pending.length})`}>
-            <FlatList
-              style={styles.list}
-              data={pending}
-              keyExtractor={(item: any) => item.userId}
-              renderItem={({item}) => (
-                <ContactListItem
-                  handleClick={this.openChat}
-                  username={item.username}
-                  userId={item.userId}
-                  lastMessageSent={item.lastMessageSent}
-                  lastMessageText={item.lastMessageText}
-                  hasUnreadMessages={item.hasUnreadMessages}
-                />
-              )}
-            />
-          </Tab>
-        </TabView>
+      <View
+        style={StyleSheet.absoluteFill}
+        contentContainerStyle={{flexGrow: 1, justifyContent: 'space-between'}}>
+        <ScrollView style={[styles.container]}>
+          <TabView
+            selectedIndex={this.state.selectedIndex}
+            onSelect={(index: number) => this.setState({selectedIndex: index})}>
+            <Tab title={`Contacts (${contacts.length})`}>
+              <FlatList
+                style={styles.list}
+                data={contacts}
+                keyExtractor={(item: any) => item.userId}
+                renderItem={({item}) => (
+                  <ContactListItem
+                    handleClick={this.openChat}
+                    username={item.username}
+                    userId={item.userId}
+                    lastMessageSent={item.lastMessageSent}
+                    lastMessageText={item.lastMessageText}
+                    hasUnreadMessages={item.hasUnreadMessages}
+                  />
+                )}
+              />
+            </Tab>
+            <Tab title={`Pending (${pending.length})`}>
+              <FlatList
+                style={styles.list}
+                data={pending}
+                keyExtractor={(item: any) => item.userId}
+                renderItem={({item}) => (
+                  <PendingContactListItem
+                    handleClick={this.openChat}
+                    username={item.username}
+                    userId={item.userId}
+                    lastMessageSent={item.lastMessageSent}
+                    lastMessageText={item.lastMessageText}
+                    hasUnreadMessages={item.hasUnreadMessages}
+                    acceptInvite={this.acceptInvite}
+                    denyInvite={this.denyInvite}
+                    cancelInvitation={this.cancelInvitation}
+                  />
+                )}
+              />
+            </Tab>
+          </TabView>
+        </ScrollView>
         <ActionButton
           buttonColor="#3366FF"
           onPress={this.openAddContactModal}></ActionButton>
-      </ScrollView>
+      </View>
     );
   }
 }
@@ -154,5 +185,6 @@ const styles = StyleSheet.create({
   },
   list: {
     marginTop: 20,
+    marginBottom: 30,
   },
 });

@@ -25,7 +25,7 @@ export default (state: State = initialState, action: any): State => {
         savedUsers: [...state.savedUsers, {...action.payload}],
       };
 
-    case ACTION_TYPES.AUTH.LOGIN_SUCCESS:
+    case ACTION_TYPES.AUTH.LOGIN_SUCCESS: {
       const existingUser = state.savedUsers.find(
         (x: UserPayload) => x.userId == action.payload.userId,
       );
@@ -40,6 +40,7 @@ export default (state: State = initialState, action: any): State => {
           };
 
       return newState;
+    }
 
     case ACTION_TYPES.AUTH.LOGOUT:
       return {

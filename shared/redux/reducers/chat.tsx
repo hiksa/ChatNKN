@@ -135,11 +135,28 @@ export default (state = initialState, action: any): State => {
     case ACTION_TYPES.CONTACTS.ADD_CONTACT_ATTEMPT: {
       const {userId, contact} = action.payload;
       return {
+        ...state,
         chats: {
           ...state.chats,
           [userId]: {
             ...state.chats[userId],
             [contact.userId]: [],
+          },
+        },
+      };
+    }
+
+    case ACTION_TYPES.CONTACTS.INVITATION_RECEIVED: {
+      const {contactId} = action.payload;
+      const user = action.payload.userId;
+
+      return {
+        ...state,
+        chats: {
+          ...state.chats,
+          [user]: {
+            ...state.chats[user],
+            [contactId]: [],
           },
         },
       };

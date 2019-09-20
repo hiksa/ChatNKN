@@ -10,4 +10,5 @@ const MESSAGE_TYPES = {
   },
 };
 
+export {MESSAGE_TYPES};
 export default MESSAGE_TYPES;

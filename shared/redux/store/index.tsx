@@ -1,16 +1,16 @@
-import { createStore, applyMiddleware, Middleware } from 'redux';
+import {createStore, applyMiddleware, Middleware} from 'redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as thunkMiddleware from 'redux-thunk';
 import {persistStore, persistReducer} from 'redux-persist';
-import { createLogger } from 'redux-logger';
+import {createLogger} from 'redux-logger';
 import rootReducer from '../reducers';
 
 const persistConfig = {
   key: 'root',
-  storage: AsyncStorage
-}
+  storage: AsyncStorage,
+};
 
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 let middlewares = new Array<Middleware>(thunkMiddleware.default);
 if (true) {
@@ -18,9 +18,7 @@ if (true) {
   middlewares = [...middlewares, loggerMiddleware];
 }
 
-const store = createStore(
-  persistedReducer, 
-  applyMiddleware(...middlewares));
+const store = createStore(persistedReducer, applyMiddleware(...middlewares));
 
 export const persistor = persistStore(store);
 

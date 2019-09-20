@@ -12,7 +12,10 @@ import {Navigation} from 'react-native-navigation';
 import RNLocalNotifications from 'react-native-local-notifications';
 import {setBalance, confirmTransaction} from './walletActionCreators';
 import {receiveMessage, markReceived} from './chatActionCreators';
-import {addContactSuccess} from './contactsActionCreators';
+import {
+  addContactSuccess,
+  addContactInvitationReceived as invitationReceived,
+} from './contactsActionCreators';
 import {Decimal} from 'decimal.js';
 import configs from '../../misc/configs';
 import {
@@ -99,11 +102,25 @@ const initializeClient = (
           }
 
           case MESSAGE_TYPES.CONTACT.ADD: {
+            const invitationReceivedPayload = {
+              contactId: fromUserId,
+              userId: publicKey,
+              username: decoded.username,
+              requestReceivedOn: new Date(),
+            };
+
+            dispatch(invitationReceived(invitationReceivedPayload));
             break;
           }
 
           case MESSAGE_TYPES.CONTACT.ACCEPT: {
-            dispatch(addContactSuccess({}));
+            dispatch(
+              addContactSuccess({
+                userId: publicKey,
+                contactId: fromUserId,
+                acceptedOn: new Date(),
+              }),
+            );
 
             break;
           }
@@ -179,7 +196,7 @@ export const initiateApp = () => {
 };
 
 export const loginAttempt = (payload: LoginAttemptPayload) => {
-  return (dispatch: Function, getState: Function) => {    
+  return (dispatch: Function, getState: Function) => {
     const authState = getState().auth;
     const savedUser = authState.savedUsers.find(
       (x: any) => x.username == payload.username,

@@ -1,6 +1,10 @@
 import {connect} from 'react-redux';
 import Component from './Component';
-import {purgeStorage} from '../../../../shared/redux/actions/actionCreators';
+import {
+  acceptInvite,
+  denyInvite,
+  cancelInvitation,
+} from '../../../../shared/redux/actions/contactsActionCreators';
 // import { startChat } from '../../../../shared/redux/actions/chatActionCreators';
 
 const mapStateToProps = (state: any) => {
@@ -17,15 +21,16 @@ const mapStateToProps = (state: any) => {
   });
 
   return {
+    userId,
     contacts: result,
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    purge: () => dispatch(purgeStorage()),
-    // openChat: (chatId: string) => dispatch(startChat(chatId))
-    openChat: (chatId: string) => console.log('starting chat'),
+    acceptInvite: (payload: any) => dispatch(acceptInvite(payload)),
+    denyInvite: (payload: any) => dispatch(denyInvite(payload)),
+    cancelInvitation: (payload: any) => dispatch(cancelInvitation(payload)),
   };
 };
 

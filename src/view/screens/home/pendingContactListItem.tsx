@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {ScrollView, FlatList, Image} from 'react-native';
-import {Avatar, Text, ListItem} from 'react-native-ui-kitten';
+import {ScrollView, FlatList, Image, View} from 'react-native';
+import {Avatar, Text, ListItem, Button, Layout} from 'react-native-ui-kitten';
 
 export interface Props {
   username: string;
@@ -10,25 +10,35 @@ export interface Props {
   lastMessageText: string;
   lastMessageSent: string;
   hasUnreadMessages: boolean;
+
+  acceptInvite: Function;
+  denyInvite: Function;
+  cancelInvitation: Function;
 }
 
 interface State {
   name: string;
 }
 
-export default class PendingContactListItem extends React.Component<Props, State> {
+export default class PendingContactListItem extends React.Component<
+  Props,
+  State
+> {
   constructor(props: Props) {
     super(props);
   }
 
-  handleOnClick = () => {
-    console.log(this.props);
-    this.props.handleClick(this.props.userId, this.props.username);
+  handleAcceptInviteClick = () => {
+    this.props.acceptInvite(this.props.userId);
   };
 
-  componentDidMount() {
-    // console.log(this.props.userId);
-  }
+  handleDenyInviteClick = () => {
+    this.props.denyInvite(this.props.userId);
+  };
+
+  handleCancelInvitationClick = () => {};
+
+  componentDidMount() {}
 
   timeDifference(previous: number) {
     let current = new Date().getTime();
@@ -55,27 +65,38 @@ export default class PendingContactListItem extends React.Component<Props, State
     }
   }
 
-  getDescription(lastMessageSent: string, lastMessageText: string): string {
-    let timePart = lastMessageSent
-      ? this.timeDifference(new Date(lastMessageSent).getTime())
-      : 'no messages';
-
-    return `${timePart} - ${lastMessageText}`;
-  }
-
   render() {
     const {username, lastMessageSent, lastMessageText} = this.props;
-    const description = this.getDescription(lastMessageSent, lastMessageText);
 
     return (
-      <ListItem
-        onPress={this.handleOnClick}
-        title={username}
-        description={description}
-        icon={() => (
-          <Avatar source={require('../../assets/images/avatar.png')} />
-        )}
-      />
+      <ListItem style={{flex: 1}}>
+        <Avatar
+          style={{flex: 1}}
+          source={require('../../assets/images/avatar.png')}
+        />
+        <View style={{flex: 7, marginLeft: 20}}>
+          <Text>
+            <Text style={{fontWeight: 'bold'}}>{username}</Text>{' '}
+            <Text style={{fontSize: 14}}>wants to add you as a contact</Text>
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              paddingTop: 10,
+            }}>
+            <Button onPress={this.handleAcceptInviteClick} size="small">
+              Accept
+            </Button>
+            <Button
+              onPress={this.handleDenyInviteClick}
+              size="small"
+              appearance="outline">
+              Deny
+            </Button>
+          </View>
+        </View>
+      </ListItem>
     );
   }
 }
