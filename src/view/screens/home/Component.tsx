@@ -19,6 +19,7 @@ import {Navigation} from 'react-native-navigation';
 import ContactListItem from './contactListItem';
 import PendingContactListItem from './pendingContactListItem';
 import {TYPOGRAPHY} from '../../styles/typography';
+import YouInvitedContactListItem from './youInvitedContactListItem';
 
 declare var window: any;
 
@@ -134,6 +135,8 @@ class Home extends React.PureComponent<Props, State> {
                 keyExtractor={(item: any) => item.userId}
                 renderItem={({item}) => (
                   <ContactListItem
+                    path={item.path}
+                    imageData={item.avatarDataBase64}
                     handleClick={this.openChat}
                     username={item.username}
                     userId={item.userId}
@@ -149,19 +152,28 @@ class Home extends React.PureComponent<Props, State> {
                 style={styles.list}
                 data={pending}
                 keyExtractor={(item: any) => item.userId}
-                renderItem={({item}) => (
-                  <PendingContactListItem
-                    handleClick={this.openChat}
-                    username={item.username}
-                    userId={item.userId}
-                    lastMessageSent={item.lastMessageSent}
-                    lastMessageText={item.lastMessageText}
-                    hasUnreadMessages={item.hasUnreadMessages}
-                    acceptInvite={this.acceptInvite}
-                    denyInvite={this.denyInvite}
-                    cancelInvitation={this.cancelInvitation}
-                  />
-                )}
+                renderItem={({item}) =>
+                  item.requestReceivedOn ? (
+                    <PendingContactListItem
+                      handleClick={this.openChat}
+                      username={item.username}
+                      userId={item.userId}
+                      lastMessageSent={item.lastMessageSent}
+                      lastMessageText={item.lastMessageText}
+                      hasUnreadMessages={item.hasUnreadMessages}
+                      acceptInvite={this.acceptInvite}
+                      denyInvite={this.denyInvite}
+                      requestReceivedOn={item.requestReceivedOn}
+                    />
+                  ) : (
+                    <YouInvitedContactListItem
+                      username={item.username}
+                      userId={item.userId}
+                      deliveredOn={item.deliveredOn}
+                      cancelInvitation={this.cancelInvitation}
+                    />
+                  )
+                }
               />
             </Tab>
           </TabView>

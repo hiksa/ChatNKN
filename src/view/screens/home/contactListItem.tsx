@@ -1,15 +1,17 @@
 import * as React from 'react';
-import {ScrollView, FlatList, Image} from 'react-native';
+import {ScrollView, FlatList, Image, View} from 'react-native';
 import {Avatar, Text, ListItem} from 'react-native-ui-kitten';
 
 export interface Props {
   username: string;
   userId: string;
+  imageData: string;
   //  imageUrl: string;
   handleClick: Function;
   lastMessageText: string;
   lastMessageSent: string;
   hasUnreadMessages: boolean;
+  path: string;
 }
 
 interface State {
@@ -66,16 +68,14 @@ export default class ContactListItem extends React.Component<Props, State> {
   render() {
     const {username, lastMessageSent, lastMessageText} = this.props;
     const description = this.getDescription(lastMessageSent, lastMessageText);
-
     return (
-      <ListItem
-        onPress={this.handleOnClick}
-        title={username}
-        description={description}
-        icon={() => (
-          <Avatar source={require('../../assets/images/avatar.png')} />
-        )}
-      />
+      <ListItem onPress={this.handleOnClick} description={description}>
+        <Avatar source={{uri: 'file://' + this.props.path}} />
+        <View style={{flex: 7, marginLeft: 20}}>
+          <Text style={{fontWeight: 'bold'}}>{username}</Text>
+          <Text style={{fontSize: 14}}>{description}</Text>
+        </View>
+      </ListItem>
     );
   }
 }

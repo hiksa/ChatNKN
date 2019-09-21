@@ -1,20 +1,21 @@
 import {connect} from 'react-redux';
 import Component from './Component';
-import {sendAttempt} from '../../../../shared/redux/actions/walletActionCreators';
+import {setImage} from '../../../../shared/redux/actions/authActionCreators';
 import {getAddressFromPubKey} from '../../../../shared/misc/util';
 
 const mapStateToProps = (state: any) => {
-  const {username} = state.auth.currentUser;
+  const {username, avatarSource} = state.auth.currentUser;
 
   return {
     username,
+    avatarSource,
   };
 };
 
 const mapDispatchToProps = (dispatch: Function) => {
   return {
-    attemptSend: (payload: any, componentId: string) =>
-      dispatch(sendAttempt(payload, componentId)),
+    setImage: (payload: any, componentId: string) =>
+      dispatch(setImage(payload)),
   };
 };
 

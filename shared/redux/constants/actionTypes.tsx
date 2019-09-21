@@ -24,6 +24,7 @@ const ACTION_TYPES = {
     ACCEPT_INVITATION: 'contacts/ACCEPT_INVITATION',
     DENY_INVITATION: 'contacts/DENY_INVITATION',
     CANCEL_INVITATION: 'contacts/CANCEL_INVITATION',
+    UPDATE_IMAGE: 'contacts/UPDATE_IMAGE',
   },
 
   CHAT: {
@@ -55,7 +56,10 @@ const ACTION_TYPES = {
     CLAIM_CONFIRMED: 'faucet/CLAIM_CONFIRMED',
   },
 
-  SETTINGS: {},
+  SETTINGS: {
+    SET_IMAGE: 'settings/SET_IMAGE',
+    SET_USERNAME: 'settings/SET_USERNAME',
+  },
 };
 
 export {ACTION_TYPES};

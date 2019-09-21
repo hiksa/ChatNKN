@@ -8,9 +8,13 @@ import {
 const mapStateToProps = (state: any, ownProps: any) => {
   const {userId} = state.auth.currentUser;
   const {chatId} = ownProps;
+  const avatar = state.contacts.contacts[userId].find(x => x.userId == chatId)
+    .path;
+
   const messages = state.chat.chats[userId][chatId].map(x => ({
     ...x,
-    user: {...x.user, avatar: require('../../assets/images/avatar.png')},
+    user: {...x.user, avatar: `file://${avatar}`},
+    // user: {...x.user, avatar: require('../../assets/images/avatar.png')},
   }));
 
   return {

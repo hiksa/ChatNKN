@@ -5,22 +5,16 @@ import {Avatar, Text, ListItem, Button, Layout} from 'react-native-ui-kitten';
 export interface Props {
   username: string;
   userId: string;
-  //  imageUrl: string;
-  handleClick: Function;
-  lastMessageText: string;
-  lastMessageSent: string;
-  requestReceivedOn: string;
-  hasUnreadMessages: boolean;
 
-  acceptInvite: Function;
-  denyInvite: Function;
+  deliveredOn: string;
+  cancelInvitation: Function;
 }
 
 interface State {
   name: string;
 }
 
-export default class PendingContactListItem extends React.Component<
+export default class YouInvitedContactListItem extends React.Component<
   Props,
   State
 > {
@@ -28,15 +22,9 @@ export default class PendingContactListItem extends React.Component<
     super(props);
   }
 
-  handleAcceptInviteClick = () => {
-    this.props.acceptInvite(this.props.userId);
+  handleCancelInvitationClick = () => {
+    this.props.cancelInvitation(this.props.userId);
   };
-
-  handleDenyInviteClick = () => {
-    this.props.denyInvite(this.props.userId);
-  };
-
-  handleCancelInvitationClick = () => {};
 
   componentDidMount() {}
 
@@ -66,8 +54,8 @@ export default class PendingContactListItem extends React.Component<
   }
 
   render() {
-    const {username, requestReceivedOn} = this.props;
-    const timeAgo = this.timeDifference(new Date(requestReceivedOn).getTime());
+    const {username, deliveredOn} = this.props;
+    const timeAgo = this.timeDifference(new Date(deliveredOn).getTime());
     return (
       <ListItem style={{flex: 1}}>
         <Avatar
@@ -78,7 +66,9 @@ export default class PendingContactListItem extends React.Component<
           <View>
             <Text>
               <Text style={{fontWeight: 'bold'}}>{username}</Text>{' '}
-              <Text style={{fontSize: 14}}>wants to add you as a contact</Text>
+              <Text style={{fontSize: 14}}>
+                was invited to become your contact
+              </Text>
             </Text>
             <Text style={{fontSize: 12, fontStyle: 'italic'}}>
               invitation received{' '}
@@ -94,14 +84,8 @@ export default class PendingContactListItem extends React.Component<
               justifyContent: 'space-around',
               paddingTop: 10,
             }}>
-            <Button onPress={this.handleAcceptInviteClick} size="small">
-              Accept
-            </Button>
-            <Button
-              onPress={this.handleDenyInviteClick}
-              size="small"
-              appearance="outline">
-              Deny
+            <Button onPress={this.handleCancelInvitationClick} size="small">
+              Cancel invitation
             </Button>
           </View>
         </View>

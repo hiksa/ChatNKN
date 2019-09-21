@@ -14,6 +14,7 @@ export interface UserPayload {
   userId: string;
   username: string;
   walletJSON: string;
+  avatarSource: any;
 }
 
 export interface SetBalancePayload {

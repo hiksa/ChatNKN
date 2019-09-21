@@ -12,10 +12,11 @@ const initialState = {
 
 export default (state: State = initialState, action: any): State => {
   switch (action.type) {
-    case ACTION_TYPES.SPLASH_LAUNCHED:
+    case ACTION_TYPES.SPLASH_LAUNCHED: {
       return {
         ...state,
       };
+    }
 
     case ACTION_TYPES.FAUCET.LOADED: {
       return {

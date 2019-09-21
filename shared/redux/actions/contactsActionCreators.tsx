@@ -5,6 +5,7 @@ import {MESSAGE_TYPES} from '../constants/messageTypes';
 import store from '../store';
 
 var msgpack = require('msgpack-lite');
+var fs = require('react-native-fs');
 
 declare var window: any;
 
@@ -79,28 +80,42 @@ export const addContactSuccess = (payload: any) => {
 
 export const acceptInvite = (payload: any) => {
   return (dispatch: Function, getState: Function) => {
-    const encodedMessage = msgpack.encode({
-      type: MESSAGE_TYPES.CONTACT.ACCEPT,
-    });
+    const avatarSource = getState().auth.currentUser.avatarSource;
+    const avatarUri = avatarSource.uri;
 
-    window.nknClient
-      .send(payload.contactId, encodedMessage)
-      .then(x => console.log(x))
-      .catch(e => console.log(e));
+    fs.readFile(avatarUri, 'base64').then((data: string) => {
+      const encodedMessage = msgpack.encode({
+        type: MESSAGE_TYPES.CONTACT.ACCEPT,
+        avatarData: data,
+      });
 
-    dispatch({
-      type: ACTION_TYPES.CONTACTS.ACCEPT_INVITATION,
-      payload,
+      window.nknClient
+        .send(payload.contactId, encodedMessage)
+        .then(x => console.log(x))
+        .catch(e => console.log(e));
+
+      dispatch({
+        type: ACTION_TYPES.CONTACTS.ACCEPT_INVITATION,
+        payload,
+      });
     });
   };
 };
 
 export const denyInvite = (payload: any) => {
-  return (dispatch: Function, getState: Function) => {};
+  return {
+    type: ACTION_TYPES.CONTACTS.DENY_INVITATION,
+    payload,
+  };
 };
 
 export const cancelInvitation = (payload: any) => {
-  return (dispatch: Function, getState: Function) => {};
+  return (dispatch: Function, getState: Function) => {
+    dispatch({
+      type: ACTION_TYPES.CONTACTS.CANCEL_INVITATION,
+      payload,
+    });
+  };
 };
 
 export const addContactInvitationReceived = (payload: any) => {
@@ -113,6 +128,13 @@ export const addContactInvitationReceived = (payload: any) => {
 export const removeContact = (payload: any) => {
   return {
     type: ACTION_TYPES.CONTACTS.REMOVE_CONTACT,
-    payload: payload,
+    payload,
+  };
+};
+
+export const updateContactImage = (payload: any) => {
+  return {
+    type: ACTION_TYPES.CONTACTS.UPDATE_IMAGE,
+    payload,
   };
 };

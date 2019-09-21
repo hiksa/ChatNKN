@@ -14,6 +14,7 @@ import {setBalance, confirmTransaction} from './walletActionCreators';
 import {receiveMessage, markReceived} from './chatActionCreators';
 import {
   addContactSuccess,
+  updateContactImage,
   addContactInvitationReceived as invitationReceived,
 } from './contactsActionCreators';
 import {Decimal} from 'decimal.js';
@@ -27,6 +28,7 @@ import {
 const nknClient = require('nkn-client');
 
 const msgpack = require('msgpack-lite');
+import * as RNFS from 'react-native-fs';
 
 declare var window: any;
 
@@ -59,11 +61,6 @@ const initializeClient = (
 
   client.on('connect', () => {
     console.log('connected');
-    // client.ws.onmessage = (event: any) => {
-    //   let msg = JSON.parse(event.data);
-
-    //   console.log(msg);
-    // };
   });
 
   client.on(
@@ -114,13 +111,67 @@ const initializeClient = (
           }
 
           case MESSAGE_TYPES.CONTACT.ACCEPT: {
-            dispatch(
-              addContactSuccess({
-                userId: publicKey,
-                contactId: fromUserId,
-                acceptedOn: new Date(),
-              }),
-            );
+            const avatarDataBase64 = decoded.avatarData;
+            const dirPath = `${RNFS.DocumentDirectoryPath}/avatars/${publicKey}`;
+            debugger;
+            RNFS.mkdir(dirPath)
+              .then(x => {
+                debugger;
+                const filePath = `${dirPath}/${fromUserId}`;
+                RNFS.writeFile(filePath, avatarDataBase64, 'base64')
+                  .then(y => {
+                    debugger;
+                    dispatch(
+                      addContactSuccess({
+                        userId: publicKey,
+                        contactId: fromUserId,
+                        acceptedOn: new Date(),
+                        avatarDataBase64,
+                        path: filePath,
+                      }),
+                    );
+                  })
+                  .catch(err => {
+                    debugger;
+                  });
+              })
+              .catch(e => {
+                debugger;
+              });
+
+            const avatarSource = getState().auth.currentUser.avatarSource;
+            const avatarUri = avatarSource.uri;
+            RNFS.readFile(avatarUri, 'base64').then((data: string) => {
+              const encodedMessage = msgpack.encode({
+                type: MESSAGE_TYPES.CONTACT.UPDATE_IMAGE,
+                avatarData: data,
+              });
+
+              client
+                .send(fromUserId, encodedMessage)
+                .then(x => console.log(x))
+                .catch(e => console.log(e));
+            });
+
+            break;
+          }
+
+          case MESSAGE_TYPES.CONTACT.UPDATE_IMAGE: {
+            const avatarDataBase64 = decoded.avatarData;
+            const dirPath = `${RNFS.DocumentDirectoryPath}/avatars/${publicKey}`;
+            RNFS.mkdir(dirPath).then(x => {
+              const filePath = `${dirPath}/${fromUserId}`;
+              RNFS.writeFile(filePath, avatarDataBase64, 'base64').then(y => {
+                dispatch(
+                  updateContactImage({
+                    userId: publicKey,
+                    contactId: fromUserId,
+                    avatarDataBase64,
+                    path: filePath,
+                  }),
+                );
+              });
+            });
 
             break;
           }
@@ -278,6 +329,13 @@ export const registerSuccess = (payload: any) => {
 export const registerFail = (payload: RegisterPayload) => {
   return {
     type: ACTION_TYPES.AUTH.REGISTER_FAIL,
+    payload,
+  };
+};
+
+export const setImage = (payload: any) => {
+  return {
+    type: ACTION_TYPES.SETTINGS.SET_IMAGE,
     payload,
   };
 };

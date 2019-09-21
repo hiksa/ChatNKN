@@ -7,6 +7,7 @@ const MESSAGE_TYPES = {
     ADD: 'contact/ADD',
     ACCEPT: 'contact/ACCEPT',
     DECLINE: 'contact/DECLINE',
+    UPDATE_IMAGE: 'contact/UPDATE_IMAGE',
   },
 };
 

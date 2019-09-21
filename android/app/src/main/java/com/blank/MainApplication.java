@@ -5,6 +5,8 @@ import android.app.Application;
 import android.util.Log;
 
 import com.bitgo.randombytes.RandomBytesPackage;
+import com.imagepicker.ImagePickerPackage;
+import com.rnfs.RNFSPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.horcrux.svg.SvgPackage;
@@ -53,7 +55,8 @@ public class MainApplication extends NavigationApplication {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(new RandomBytesPackage(), new RNGestureHandlerPackage(),
                 new RNCWebViewPackage(), new ReanimatedPackage(), new RNCameraPackage(), new SvgPackage(),
-                new AsyncStoragePackage(), new RNLocalNotificationsPackage());
+                new ImagePickerPackage(), new AsyncStoragePackage(), new RNFSPackage(),
+                new RNLocalNotificationsPackage());
     }
 
     @Override

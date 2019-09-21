@@ -5,11 +5,19 @@ export interface State {
   contacts: {
     [key: string]: any[];
   };
+  deniedInvitations: {
+    [key: string]: any[];
+  };
+  canceledInvitations: {
+    [key: string]: any[];
+  };
 }
 
 const initialState: State = {
   isLoading: false,
   contacts: {},
+  deniedInvitations: {},
+  canceledInvitations: {},
 };
 
 export default (state: State = initialState, action: any): State => {
@@ -47,7 +55,7 @@ export default (state: State = initialState, action: any): State => {
     }
 
     case ACTION_TYPES.CONTACTS.ADD_CONTACT_SUCCESS: {
-      const {acceptedOn} = action.payload;
+      const {acceptedOn, avatarDataBase64, path} = action.payload;
       const u = action.payload.userId;
       const contact = action.payload.contactId;
       return {
@@ -57,7 +65,7 @@ export default (state: State = initialState, action: any): State => {
           [u]: [
             ...state.contacts[u].map((x: any) =>
               x.userId == contact
-                ? {...x, isPending: false, acceptedOn}
+                ? {...x, isPending: false, acceptedOn, avatarDataBase64, path}
                 : {...x},
             ),
           ],
@@ -85,6 +93,14 @@ export default (state: State = initialState, action: any): State => {
           ...state.contacts,
           [userId]: [],
         },
+        deniedInvitations: {
+          ...state.deniedInvitations,
+          [userId]: [],
+        },
+        canceledInvitations: {
+          ...state.canceledInvitations,
+          [userId]: [],
+        },
       };
     }
 
@@ -92,8 +108,6 @@ export default (state: State = initialState, action: any): State => {
       const {username, requestReceivedOn} = action.payload;
       const c = action.payload.contactId;
       const user = action.payload.userId;
-
-      debugger;
       return {
         ...state,
         contacts: {
@@ -125,6 +139,27 @@ export default (state: State = initialState, action: any): State => {
       };
     }
 
+    case ACTION_TYPES.CONTACTS.UPDATE_IMAGE: {
+      const payload = {...action.payload};
+      const {userId, contactId, avatarDataBase64, path} = payload;
+
+      debugger;
+
+      return {
+        ...state,
+        contacts: {
+          ...state.contacts,
+          [userId]: [
+            ...state.contacts[userId].map((x: any) =>
+              x.userId == contactId
+                ? {...x, isPending: false, avatarDataBase64, path}
+                : {...x},
+            ),
+          ],
+        },
+      };
+    }
+
     case ACTION_TYPES.CHAT.ADD_MESSAGE: {
       const {chatId, message, userId} = action.payload;
       const existingContact = state.contacts[userId].find(
@@ -142,6 +177,51 @@ export default (state: State = initialState, action: any): State => {
               lastMessageSent: message.createdAt,
             },
             ...state.contacts[userId].filter((x: any) => x.userId != chatId),
+          ],
+        },
+      };
+    }
+
+    case ACTION_TYPES.CONTACTS.DENY_INVITATION: {
+      const {userId, contactId} = action.payload;
+      const deniedContact = state.contacts[userId].find(
+        x => x.userId == contactId,
+      );
+
+      return {
+        ...state,
+        contacts: {
+          ...state.contacts,
+          [userId]: state.contacts[userId].filter(x => x.userId != contactId),
+        },
+        deniedInvitations: {
+          ...state.deniedInvitations,
+          [userId]: [
+            {...deniedContact, denied: true},
+            ...state.deniedInvitations[userId],
+          ],
+        },
+      };
+    }
+
+    case ACTION_TYPES.CONTACTS.CANCEL_INVITATION: {
+      const {userId, contactId} = action.payload;
+      const canceledInvitation = state.contacts[userId].find(
+        x => x.userId == contactId,
+      );
+
+      debugger;
+      return {
+        ...state,
+        contacts: {
+          ...state.contacts,
+          [userId]: state.contacts[userId].filter(x => x.userId != contactId),
+        },
+        canceledInvitations: {
+          ...state.canceledInvitations,
+          [userId]: [
+            {...canceledInvitation, canceled: true},
+            ...state.canceledInvitations[userId],
           ],
         },
       };

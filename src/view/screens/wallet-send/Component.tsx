@@ -223,11 +223,14 @@ class WalletSend extends React.PureComponent<Props, State> {
                       keyExtractor={(item: any) => item.userId}
                       renderItem={({item}) => (
                         <ContactListItem
+                          path={item.path}
+                          imageData={item.avatarDataBase64}
                           handleClick={this.selectContact}
                           username={item.username}
                           userId={item.address}
                           lastMessageText={item.lastMessageText}
                           lastMessageSent={item.lastMessageSent}
+                          hasUnreadMessages={item.hasUnreadMessages}
                         />
                       )}
                     />

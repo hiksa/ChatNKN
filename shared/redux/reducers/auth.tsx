@@ -13,17 +13,19 @@ const initialState = {
     userId: '',
     username: '',
     walletJSON: '',
+    avatarSource: null,
   },
   savedUsers: new Array<UserPayload>(),
 };
 
 export default (state: State = initialState, action: any): State => {
   switch (action.type) {
-    case ACTION_TYPES.AUTH.REGISTER_SUCCESS:
+    case ACTION_TYPES.AUTH.REGISTER_SUCCESS: {
       return {
         currentUser: {...action.payload},
         savedUsers: [...state.savedUsers, {...action.payload}],
       };
+    }
 
     case ACTION_TYPES.AUTH.LOGIN_SUCCESS: {
       const existingUser = state.savedUsers.find(
@@ -42,11 +44,23 @@ export default (state: State = initialState, action: any): State => {
       return newState;
     }
 
-    case ACTION_TYPES.AUTH.LOGOUT:
+    case ACTION_TYPES.AUTH.LOGOUT: {
+      return {
+        ...initialState,
+      };
+    }
+
+    case ACTION_TYPES.SETTINGS.SET_IMAGE: {
       return {
         ...state,
-        currentUser: {},
+        currentUser: {
+          ...state.currentUser,
+          avatarSource: {
+            ...action.payload,
+          },
+        },
       };
+    }
 
     default:
       return state;

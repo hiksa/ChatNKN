@@ -29,30 +29,34 @@ export default (state: State = initialState, action: any): State => {
       };
     }
 
-    case ACTION_TYPES.WALLET.SET_BALANCE:
+    case ACTION_TYPES.WALLET.SET_BALANCE: {
       return {
         ...state,
         balance: action.payload.balance,
         address: action.payload.address,
       };
+    }
 
-    case ACTION_TYPES.WALLET.ADD_BALANCE:
+    case ACTION_TYPES.WALLET.ADD_BALANCE: {
       return {
         ...state,
         balance: state.balance + action.payload,
       };
+    }
 
-    case ACTION_TYPES.WALLET.REMOVE_BALANCE:
+    case ACTION_TYPES.WALLET.REMOVE_BALANCE: {
       return {
         ...state,
         balance: state.balance - action.payload,
       };
+    }
 
-    case ACTION_TYPES.WALLET.RESET_BALANCE:
+    case ACTION_TYPES.WALLET.RESET_BALANCE: {
       return {
         ...state,
         balance: 0,
       };
+    }
 
     // case ACTION_TYPES.FAUCET.CLAIM_ATTEMPT: {
     //     const {userId} = action;
@@ -101,10 +105,11 @@ export default (state: State = initialState, action: any): State => {
       };
     }
 
-    case ACTION_TYPES.WALLET.SEND_ATTEMPT:
+    case ACTION_TYPES.WALLET.SEND_ATTEMPT: {
       return {
         ...state,
       };
+    }
 
     case ACTION_TYPES.WALLET.SEND_SUCCESS: {
       const {userId} = action.payload;
@@ -118,10 +123,11 @@ export default (state: State = initialState, action: any): State => {
       };
     }
 
-    case ACTION_TYPES.WALLET.SEND_FAIL:
+    case ACTION_TYPES.WALLET.SEND_FAIL: {
       return {
         ...state,
       };
+    }
 
     default:
       return state;
