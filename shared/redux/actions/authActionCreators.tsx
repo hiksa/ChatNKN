@@ -6,7 +6,6 @@ import {
   showRegisterScreen,
 } from '../../../src/navigators/navigation';
 
-import * as nknWallet from 'nkn-wallet';
 import {SCREENS} from '../../../src/constants/screen';
 import {Navigation} from 'react-native-navigation';
 import RNLocalNotifications from 'react-native-local-notifications';
@@ -25,6 +24,8 @@ import {
   UserPayload,
 } from '../../models/payloads';
 
+import * as nknWallet from 'nkn-wallet';
+
 const nknClient = require('nkn-client');
 
 const msgpack = require('msgpack-lite');
@@ -38,7 +39,7 @@ const initializeClient = (
   getState: Function,
 ) => {
   if (window.nknClient) {
-    console.error('client initialized already');
+    return;
   }
 
   console.log('*******INITIALIZING CLIENT*******');
@@ -184,7 +185,7 @@ const initializeClient = (
   );
 
   client.on('block', (block: any) => {
-    // console.log('block received', block);
+    console.log('block received', block);
     const {transactions} = block;
     const unconfirmed = getState().wallet.txHistory[publicKey].filter(
       (x: any) => !x.confirmed,
@@ -221,6 +222,9 @@ const create_UUID = () => {
 
 export const logout = () => {
   return (dispatch: Function, getState: Function) => {
+    window.nknClient = null;
+    window.nknWallet = null;
+
     dispatch({type: ACTION_TYPES.AUTH.LOGOUT});
     showLoginScreen();
   };

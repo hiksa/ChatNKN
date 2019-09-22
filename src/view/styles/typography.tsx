@@ -1,6 +1,6 @@
 const COLOR = {
   // CTA
-  Primary: '#565656',
+  Primary: '#3366FF',
   Secondary: '#399be0',
   Default: '#FFFFFF',
   DefaultSelected: '#222222',
@@ -23,4 +23,4 @@ const TYPOGRAPHY = {
   BUTTON,
 };
 
-export { TYPOGRAPHY };
+export {TYPOGRAPHY};

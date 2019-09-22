@@ -62,7 +62,7 @@ export const showLoginScreen = () => {
 export const tabbedNavigation = () =>
   Navigation.setRoot({
     root: {
-      bottomTabs: {        
+      bottomTabs: {
         id: 'MainNav',
         children: [
           {
@@ -96,7 +96,7 @@ export const tabbedNavigation = () =>
                   fontSize: 12,
                   text: 'Chat',
                   textColor: TYPOGRAPHY.COLOR.Primary,
-                  selectedTextColor: TYPOGRAPHY.COLOR.Secondary,
+                  selectedTextColor: TYPOGRAPHY.COLOR.Primary,
                   icon: require('../view/assets/images/tabbar/chat.png'),
                   selectedIcon: require('../view/assets/images/tabbar/chat.png'),
                 },
@@ -131,7 +131,7 @@ export const tabbedNavigation = () =>
                   text: 'Wallet',
                   fontSize: 12,
                   textColor: TYPOGRAPHY.COLOR.Primary,
-                  selectedTextColor: TYPOGRAPHY.COLOR.Secondary,
+                  selectedTextColor: TYPOGRAPHY.COLOR.Primary,
                   icon: require('../view/assets/images/tabbar/wallet.png'),
                   selectedIcon: require('../view/assets/images/tabbar/wallet.png'),
                 },
@@ -166,7 +166,7 @@ export const tabbedNavigation = () =>
                   text: 'Settings',
                   fontSize: 12,
                   textColor: TYPOGRAPHY.COLOR.Primary,
-                  selectedTextColor: TYPOGRAPHY.COLOR.Secondary,
+                  selectedTextColor: TYPOGRAPHY.COLOR.Primary,
                   icon: require('../view/assets/images/tabbar/settings.png'),
                   selectedIcon: require('../view/assets/images/tabbar/settings.png'),
                 },

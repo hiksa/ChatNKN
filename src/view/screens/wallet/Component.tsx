@@ -72,19 +72,12 @@ class Wallet extends React.PureComponent<any, State> {
   };
 
   render() {
-    const {balance, address} = this.props;
+    const {balance, address, transactions} = this.props;
     return (
       <SafeAreaView style={{flex: 1}}>
         <Layout style={[styles.container, StyleSheet.absoluteFill]}>
           <UserBalance balance={balance} address={address} />
-          <Layout
-            level={'3'}
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              paddingTop: 20,
-              paddingBottom: 20,
-            }}>
+          <Layout level={'3'} style={styles.buttonsContainer}>
             <Button
               onPress={this.handleSend}
               style={{width: 120}}
@@ -98,31 +91,14 @@ class Wallet extends React.PureComponent<any, State> {
               Receive
             </Button>
           </Layout>
-
-          <Text
-            appearance="default"
-            category="h4"
-            style={{
-              fontWeight: 'bold',
-              fontSize: 18,
-              textAlign: 'center',
-              marginTop: 20,
-            }}>
-            {/* > */}
+          <Text appearance="default" category="h4" style={styles.txHeader}>
             Last Transactions
           </Text>
-
           <ScrollView>
             <List
-              data={this.props.transactions}
+              data={transactions}
               renderItem={({item}) => <TransactionListItem {...item} />}
             />
-
-            {/* <FlatList
-              data={this.props.transactions}
-              keyExtractor={(item: any) => item.txId}
-              renderItem={({item}) => <TransactionListItem {...item} />}
-            /> */}
           </ScrollView>
         </Layout>
       </SafeAreaView>
@@ -134,6 +110,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  txHeader: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 20,
+    paddingBottom: 20,
   },
 });
 

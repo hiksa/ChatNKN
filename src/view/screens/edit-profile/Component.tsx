@@ -28,6 +28,7 @@ export interface Props {
 
 interface State {
   avatarSource: any;
+  canSave: boolean;
 }
 
 export default class EditProfile extends React.PureComponent<Props, State> {
@@ -36,18 +37,11 @@ export default class EditProfile extends React.PureComponent<Props, State> {
 
     this.state = {
       avatarSource: this.props.avatarSource,
+      canSave: false,
     };
   }
 
   componentDidMount() {}
-
-  handleSaveChanges = () => {
-    this.props.setImage(this.state.avatarSource);
-    Toast.show('Avatar updated.', {
-      duration: Toast.durations.SHORT,
-      position: Toast.positions.TOP,
-    });
-  };
 
   handleSelectImage = () => {
     const options = {
@@ -67,9 +61,19 @@ export default class EditProfile extends React.PureComponent<Props, State> {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         const source = {uri: response.uri};
-        this.setState({avatarSource: source});
+        this.setState({avatarSource: source, canSave: true});
       }
     });
+  };
+
+  handleSaveChanges = () => {
+    this.props.setImage(this.state.avatarSource);
+    Toast.show('Avatar updated.', {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.TOP,
+    });
+
+    this.setState({canSave: false});
   };
 
   handleCancel = () => {
@@ -80,30 +84,32 @@ export default class EditProfile extends React.PureComponent<Props, State> {
     return (
       <Layout style={[{flex: 1, padding: 20}, StyleSheet.absoluteFill]}>
         <Layout style={[{padding: 10, alignItems: 'center'}]} level={'3'}>
-          <TouchableOpacity onPress={this.handleSelectImage}>
-            <View
-              style={[
-                styles.avatar,
-                styles.avatarContainer,
-                {marginBottom: 20},
-              ]}>
+          <TouchableOpacity
+            onPress={this.handleSelectImage}
+            style={{paddingBottom: 20}}>
+            <View style={[styles.avatar, styles.avatarContainer]}>
               {this.state.avatarSource == null ? (
                 <Text>Select a Photo</Text>
               ) : (
-                <Image style={styles.avatar} source={this.state.avatarSource} />
+                <View>
+                  <Image
+                    style={styles.avatar}
+                    source={this.state.avatarSource}
+                  />
+                </View>
               )}
             </View>
           </TouchableOpacity>
         </Layout>
-        <View
-          style={{
-            marginTop: 40,
-            marginBottom: 40,
-            justifyContent: 'space-around',
-            flexDirection: 'row',
-          }}>
-          <Button onPress={this.handleSaveChanges}>Save</Button>
-          <Button onPress={this.handleCancel}>Cancel</Button>
+        <View style={styles.buttonsContainer}>
+          <Button
+            onPress={this.handleSaveChanges}
+            disabled={!this.state.canSave}>
+            Save
+          </Button>
+          <Button onPress={this.handleCancel} appearance={'outline'}>
+            Back
+          </Button>
         </View>
       </Layout>
     );
@@ -128,5 +134,11 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     width: 150,
     height: 150,
+  },
+  buttonsContainer: {
+    marginTop: 40,
+    marginBottom: 40,
+    justifyContent: 'space-around',
+    flexDirection: 'row',
   },
 });

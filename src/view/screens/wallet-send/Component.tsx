@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Dimensions,
+  ViewProps,
 } from 'react-native';
 import {Provider} from 'react-redux';
 import {Navigation} from 'react-native-navigation';
@@ -18,7 +19,16 @@ import store, {persistor} from '../../../../shared/redux/store';
 import {CText} from '../../elements/custom';
 import ContactListItem from '../home/contactListItem';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {Button, Text, Input, Layout, List} from 'react-native-ui-kitten';
+import * as nknWallet from 'nkn-wallet';
+import {
+  Button,
+  Text,
+  Input,
+  Layout,
+  List,
+  Modal,
+  Avatar,
+} from 'react-native-ui-kitten';
 
 export interface Props {
   userId: string;
@@ -35,13 +45,11 @@ interface State {
   filteredContacts: any[];
   index: number;
   routes: any[];
+  modalVisible: boolean;
+  selectedContact: any;
 }
 
 declare var window: any;
-
-const FirstRoute = () => <View style={[{backgroundColor: '#ff4081'}]} />;
-
-const SecondRoute = () => <View style={[{backgroundColor: '#673ab7'}]} />;
 
 class WalletSend extends React.PureComponent<Props, State> {
   constructor(props: any) {
@@ -56,6 +64,8 @@ class WalletSend extends React.PureComponent<Props, State> {
         {key: 'first', title: 'Select Contact'},
         {key: 'second', title: 'Scan QR'},
       ],
+      modalVisible: false,
+      selectedContact: null,
     };
   }
 
@@ -77,20 +87,13 @@ class WalletSend extends React.PureComponent<Props, State> {
       return;
     }
 
-    if (!window.nknWallet.verifyAddress(this.state.toAddress)) {
+    if (!nknWallet.verifyAddress(this.state.toAddress)) {
       // TODO: Invalid address
       return;
     }
 
-    const payload = {
-      from: this.props.address,
-      to: this.state.toAddress,
-      amount: this.state.amount,
-      userId: this.props.userId,
-    };
-
-    console.log(payload);
-    this.props.attemptSend(payload, this.props.componentId);
+    this.toggleModal();
+    return;
   };
 
   handleCancel = () => {
@@ -98,21 +101,91 @@ class WalletSend extends React.PureComponent<Props, State> {
   };
 
   selectContact = (address: string) => {
-    console.log(address);
-    this.setState({toAddress: address});
+    const contact = this.props.contacts.find(x => x.address == address);
+    this.setState({toAddress: address, selectedContact: contact});
   };
 
   onScan = (e: any) => {
     console.log(e);
   };
 
+  handleMaxPress = () => {
+    const amount = this.props.balance.toFixed(8).toString();
+    this.setState({amount: amount});
+  };
+
+  toggleModal = () => {
+    const currentState = this.state.modalVisible;
+    this.setState({modalVisible: !currentState});
+  };
+
+  confirmSend = () => {
+    const payload = {
+      from: this.props.address,
+      to: this.state.toAddress,
+      amount: this.state.amount,
+      userId: this.props.userId,
+    };
+
+    this.toggleModal();
+    this.props.attemptSend(payload, this.props.componentId);
+  };
+
+  renderModalElement = (): React.ReactElement<ViewProps> => {
+    const contact = this.state.selectedContact;
+    return (
+      <Layout level="3" style={styles.modalContainer}>
+        <View style={{marginBottom: 20}}>
+          <Text style={{fontWeight: 'bold'}}>Important</Text>
+          <Text category={'p2'}>
+            Please review the details below. Once you press Send, the
+            transaction cannot be reversed.
+          </Text>
+        </View>
+        {contact == null ? (
+          <View></View>
+        ) : (
+          <View style={{marginBottom: 10, flexDirection: 'row'}}>
+            <Avatar source={{uri: 'file://' + contact.path}} />
+            <View style={{flex: 7, marginLeft: 15}}>
+              <Text>{contact.username}</Text>
+            </View>
+          </View>
+        )}
+        <View style={{marginBottom: 20}}>
+          <Text category={'p2'} style={{fontStyle: 'italic'}}>
+            Receiving address
+          </Text>
+          <Text style={{fontWeight: 'bold'}}>{this.state.toAddress}</Text>
+          <Text category={'p2'} style={{fontStyle: 'italic', marginTop: 10}}>
+            Amount
+          </Text>
+          <Text style={{fontWeight: 'bold'}}>{this.state.amount} NKN</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button onPress={this.confirmSend}>Send</Button>
+          <Button appearance={'outline'} onPress={this.toggleModal}>
+            Close
+          </Button>
+        </View>
+      </Layout>
+    );
+  };
+
   render() {
     return (
       <Layout style={[{flex: 1, padding: 20}, StyleSheet.absoluteFill]}>
         <ScrollView>
+          <Modal
+            visible={this.state.modalVisible}
+            allowBackdrop={true}
+            backdropStyle={{backgroundColor: 'black', opacity: 0.5}}
+            onBackdropPress={this.toggleModal}>
+            {this.renderModalElement()}
+          </Modal>
           <Layout style={{padding: 10}} level={'3'}>
             <View>
-              <View style={{flexDirection: 'row', paddingBottom: 10}}>
+              <View style={styles.smallButtonsContainer}>
                 <Input
                   style={{flex: 3}}
                   size={'small'}
@@ -132,15 +205,8 @@ class WalletSend extends React.PureComponent<Props, State> {
                   value={this.state.amount}
                 />
               </View>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text
-                  category={'p1'}
-                  style={{
-                    marginTop: 5,
-                    marginRight: 10,
-                    fontWeight: 'bold',
-                  }}>
+              <View style={styles.balanceContainer}>
+                <Text category={'p1'} style={styles.balanceText}>
                   Balance {this.props.balance.toFixed(8)} NKN
                 </Text>
                 <View style={{flexDirection: 'row-reverse'}}>
@@ -148,15 +214,10 @@ class WalletSend extends React.PureComponent<Props, State> {
                     status={'info'}
                     size={'small'}
                     style={{height: 30}}
-                    labelStyle={{fontSize: 10}}
                     disabled={
                       parseFloat(this.state.amount) == this.props.balance
                     }
-                    onPress={() =>
-                      this.setState({
-                        amount: this.props.balance.toFixed(8).toString(),
-                      })
-                    }>
+                    onPress={this.handleMaxPress}>
                     max
                   </Button>
 
@@ -165,7 +226,6 @@ class WalletSend extends React.PureComponent<Props, State> {
                     appearance={'outline'}
                     size={'small'}
                     style={{height: 30, marginRight: 10}}
-                    labelStyle={{fontSize: 10}}
                     disabled={this.state.amount == ''}
                     onPress={() => this.setState({amount: ''})}>
                     x clear
@@ -174,23 +234,14 @@ class WalletSend extends React.PureComponent<Props, State> {
               </View>
             </View>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 20,
-              }}>
-              <Button
-                onPress={this.handleSend}
-                style={{width: 120, textAlign: 'center'}}
-                labelStyle={{textAlign: 'center'}}>
+            <View style={styles.buttonsContainer}>
+              <Button onPress={this.handleSend} style={{width: 120}}>
                 Confirm
               </Button>
               <Button
                 appearance={'outline'}
                 onPress={this.handleCancel}
-                style={{width: 120, textAlign: 'center'}}
-                labelStyle={{textAlign: 'center'}}>
+                style={{width: 120}}>
                 Cancel
               </Button>
             </View>
@@ -281,6 +332,28 @@ const styles = StyleSheet.create({
   },
   buttonTouchable: {
     padding: 16,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  smallButtonsContainer: {
+    flexDirection: 'row',
+    paddingBottom: 10,
+  },
+  balanceText: {
+    marginTop: 5,
+    marginRight: 10,
+    fontWeight: 'bold',
+  },
+  balanceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalContainer: {
+    padding: 20,
+    width: 380,
   },
 });
 

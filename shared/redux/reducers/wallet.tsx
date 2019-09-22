@@ -80,8 +80,8 @@ export default (state: State = initialState, action: any): State => {
         txHistory: {
           ...state.txHistory,
           [userId]: [
-            ...state.txHistory[userId],
             {...action.payload, confirmed: false},
+            ...state.txHistory[userId],
           ],
         },
       };
@@ -91,15 +91,14 @@ export default (state: State = initialState, action: any): State => {
       const {userId} = action;
       const {txId} = action.payload;
 
-      const tx = state.txHistory[userId].find((x: any) => x.txId == txId);
-
       return {
         ...state,
         txHistory: {
           ...state.txHistory,
           [userId]: [
-            ...state.txHistory[userId].filter((x: any) => x.txId != txId),
-            {...tx, confirmed: true},
+            ...state.txHistory[userId].map((tx: any) =>
+              tx.txId == txId ? {...tx, confirmed: true} : {...tx},
+            ),
           ],
         },
       };
@@ -118,7 +117,7 @@ export default (state: State = initialState, action: any): State => {
         balance: state.balance - action.payload.amount,
         txHistory: {
           ...state.txHistory,
-          [userId]: [...state.txHistory[userId], {...action.payload.tx}],
+          [userId]: [{...action.payload.tx}, ...state.txHistory[userId]],
         },
       };
     }

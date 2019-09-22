@@ -4,6 +4,7 @@ import {Navigation} from 'react-native-navigation';
 import tabbedNavigation from '../../../src/navigators/navigation';
 import Decimal from 'decimal.js';
 import {SetBalancePayload} from '../../models/payloads';
+import Toast from 'react-native-root-toast';
 
 declare var window: any;
 
@@ -82,20 +83,21 @@ export const claimFail = (payload: any) => {
 export const sendAttempt = (payload: any, componentId: string) => {
   return (dispatch: Function, getState: Function) => {
     const {from, to, amount} = payload;
+    const amt = parseFloat(amount);
 
     Navigation.pop(componentId);
 
     window.nknWallet
       .transferTo(to, amount)
-      .then((x: any) => {
-        console.log('transfer success ', x);
-        const tx = {from, to, amount, date: new Date(), success: true};
+      .then((txId: string) => {
+        const date = new Date();
+        const tx = {from, to, txId, amount: amt, date, success: true};
         payload.tx = tx;
         dispatch(sendSuccess(payload));
       })
       .catch((x: any) => {
         console.log('transfer error ', x);
-        const tx = {from, to, amount, date: new Date(), success: false};
+        const tx = {from, to, amount: amt, date: new Date(), success: false};
         payload.tx = tx;
         dispatch(sendFail(payload));
       });
@@ -125,9 +127,15 @@ export const confirmTransaction = (payload: any) => {
   return (dispatch: Function, getState: Function) => {
     const {userId, address} = getState().auth.currentUser;
 
+    Toast.show('Transaction confirmed.', {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.TOP,
+    });
+
     window.nknWallet.getBalance().then((x: Decimal) => {
-      const payload = {balance: x.toNumber(), address: address};
-      dispatch(setBalance(payload));
+      debugger;
+      const balancePayload = {balance: x.toNumber(), address: address};
+      dispatch(setBalance(balancePayload));
     });
 
     dispatch({

@@ -60,7 +60,7 @@ class Settings extends React.PureComponent<Props, State> {
             drawBehind: false,
             visible: true,
             title: {
-              text: 'Edit Profile',
+              text: 'Edit Avatar',
             },
           },
         },
@@ -106,7 +106,7 @@ class Settings extends React.PureComponent<Props, State> {
             appearance={'outline'}
             style={{marginTop: 20}}
             onPress={this.handleEdit}>
-            Edit Profile
+            Edit Avatar
           </Button>
           <Button style={{marginTop: 30}} onPress={this.handleLogout}>
             Logout

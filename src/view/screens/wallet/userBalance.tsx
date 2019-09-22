@@ -27,7 +27,7 @@ export default class UserBalance extends React.Component<Props, State> {
   render() {
     return (
       <Layout level={'3'}>
-        <Text category={'h6'} onPress={this.copyAddress} style={styles.address}>
+        <Text onPress={this.copyAddress} style={styles.address}>
           {this.props.address}
         </Text>
         <Text style={styles.addressSubtext}>tap to copy</Text>
@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     textAlign: 'center',
     marginTop: 20,
+    fontSize: 16,
   },
   addressSubtext: {
     fontSize: 12,

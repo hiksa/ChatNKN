@@ -5,9 +5,10 @@ import {initiateApp} from '../../../../shared/redux/actions/authActionCreators';
 const mapStateToProps = (state: any) => {
   const {username, userId} = state.auth.currentUser;
   const {balance, address} = state.wallet;
-  const transactions = state.wallet.txHistory[userId]
-    .filter((x: any) => x.txId)
-    .map((x: any) => ({...x, isOutgoing: x.from == address}));
+  const transactions = state.wallet.txHistory[userId].map((x: any) => ({
+    ...x,
+    isOutgoing: x.from == address,
+  }));
 
   return {
     username,

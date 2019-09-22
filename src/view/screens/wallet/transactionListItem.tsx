@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {View, Text} from 'react-native';
-import {CText} from '../../elements/custom';
 import {ListItem, Avatar} from 'react-native-ui-kitten';
+import TimeAgo from 'react-native-timeago';
 
 export interface Props {
   txId: string;
@@ -11,6 +11,7 @@ export interface Props {
   amount: number;
   isClaimTx: boolean;
   success: boolean;
+  confirmed: boolean;
   isOutgoing: boolean;
 }
 
@@ -34,21 +35,39 @@ export default class TransactionListItem extends React.Component<Props, State> {
       ? this.props.to
       : this.props.from;
 
-    const icon = this.props.isClaimTx
-      ? 'claim'
-      : this.props.isOutgoing
-      ? 'sending'
-      : 'receiving';
-
     return (
       <ListItem
-        icon={() => (
-          <Avatar source={require('../../assets/images/avatar.png')} />
-        )}
         onPress={this.handleItemPressed}
-        title={this.props.txId.substr(0, 30) + '...'}
-        description={`${formattedDate} - ${amountPrefix} ${formattedAmount} NKN ${addressPrefix} ${destinationAddress}`}
-      />
+        description={`${formattedDate} - ${amountPrefix} ${formattedAmount} NKN ${addressPrefix} ${destinationAddress}`}>
+        <Avatar
+          source={
+            this.props.isOutgoing
+              ? require('../../assets/images/arrow-left.png')
+              : require('../../assets/images/arrow-right.png')
+          }
+        />
+
+        <View style={{flex: 7, marginLeft: 20}}>
+          <Text style={{fontWeight: 'bold'}}>
+            {this.props.txId.substr(0, 30) + '...'}
+          </Text>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <TimeAgo
+              time={this.props.date}
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                fontStyle: 'italic',
+                marginRight: 5,
+              }}
+            />
+            <Text style={{fontStyle: 'italic', fontSize: 12}}>
+              {`${amountPrefix} ${formattedAmount} NKN ${addressPrefix}`}
+            </Text>
+          </View>
+          <Text style={{fontSize: 12}}>{destinationAddress}</Text>
+        </View>
+      </ListItem>
     );
   }
 }

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {ScrollView, FlatList, Image, View} from 'react-native';
 import {Avatar, Text, ListItem} from 'react-native-ui-kitten';
+import TimeAgo from 'react-native-timeago';
 
 export interface Props {
   username: string;
@@ -24,7 +25,6 @@ export default class ContactListItem extends React.Component<Props, State> {
   }
 
   handleOnClick = () => {
-    console.log(this.props);
     this.props.handleClick(this.props.userId, this.props.username);
   };
 
@@ -32,48 +32,23 @@ export default class ContactListItem extends React.Component<Props, State> {
     // console.log(this.props.userId);
   }
 
-  timeDifference(previous: number) {
-    let current = new Date().getTime();
-    let msPerMinute = 60 * 1000;
-    let msPerHour = msPerMinute * 60;
-    let msPerDay = msPerHour * 24;
-    let msPerMonth = msPerDay * 30;
-    let msPerYear = msPerDay * 365;
-
-    let elapsed = current - previous;
-
-    if (elapsed < msPerMinute) {
-      return Math.round(elapsed / 1000) + ' seconds ago';
-    } else if (elapsed < msPerHour) {
-      return Math.round(elapsed / msPerMinute) + ' minutes ago';
-    } else if (elapsed < msPerDay) {
-      return Math.round(elapsed / msPerHour) + ' hours ago';
-    } else if (elapsed < msPerMonth) {
-      return '~ ' + Math.round(elapsed / msPerDay) + ' days ago';
-    } else if (elapsed < msPerYear) {
-      return '~ ' + Math.round(elapsed / msPerMonth) + ' months ago';
-    } else {
-      return '~ ' + Math.round(elapsed / msPerYear) + ' years ago';
-    }
-  }
-
-  getDescription(lastMessageSent: string, lastMessageText: string): string {
-    let timePart = lastMessageSent
-      ? this.timeDifference(new Date(lastMessageSent).getTime())
-      : 'no messages';
-
-    return `${timePart} - ${lastMessageText}`;
-  }
-
   render() {
     const {username, lastMessageSent, lastMessageText} = this.props;
-    const description = this.getDescription(lastMessageSent, lastMessageText);
+    const messageText =
+      lastMessageText.substr(0, 30) +
+      (lastMessageText.length > 30 ? '...' : '');
     return (
-      <ListItem onPress={this.handleOnClick} description={description}>
+      <ListItem onPress={this.handleOnClick}>
         <Avatar source={{uri: 'file://' + this.props.path}} />
         <View style={{flex: 7, marginLeft: 20}}>
           <Text style={{fontWeight: 'bold'}}>{username}</Text>
-          <Text style={{fontSize: 14}}>{description}</Text>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <TimeAgo
+              time={lastMessageSent}
+              style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic'}}
+            />
+            <Text style={{fontSize: 12, marginLeft: 10}}>{messageText}</Text>
+          </View>
         </View>
       </ListItem>
     );
