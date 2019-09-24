@@ -3,9 +3,10 @@ import Component from './Component';
 import {logout} from '../../../shared/redux/actions/authActionCreators';
 
 const mapStateToProps = (state: any) => {
-  const {userId} = state.auth.currentUser;
+  const {userId, username} = state.auth.currentUser;
   return {
     userId,
+    username
   };
 };
 

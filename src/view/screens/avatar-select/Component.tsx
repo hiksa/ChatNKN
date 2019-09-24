@@ -22,6 +22,7 @@ export interface Props {
 interface State {
   avatarSource: any;
   canSave: boolean;
+  skipDisabled: boolean;
 }
 
 export default class AvatarSelect extends React.PureComponent<Props, State> {
@@ -31,6 +32,7 @@ export default class AvatarSelect extends React.PureComponent<Props, State> {
     this.state = {
       avatarSource: this.props.avatarSource,
       canSave: false,
+      skipDisabled: false,
     };
   }
 
@@ -61,7 +63,7 @@ export default class AvatarSelect extends React.PureComponent<Props, State> {
 
   handleSaveChanges = () => {
     this.props.setImage(this.state.avatarSource);
-    this.setState({canSave: false});
+    this.setState({canSave: false, skipDisabled: true});
     setTimeout(tabbedNavigation, 2000);
   };
 
@@ -96,7 +98,10 @@ export default class AvatarSelect extends React.PureComponent<Props, State> {
             disabled={!this.state.canSave}>
             Save
           </Button>
-          <Button onPress={this.handleCancel} appearance={'outline'}>
+          <Button
+            disabled={this.state.skipDisabled}
+            onPress={this.handleCancel}
+            appearance={'outline'}>
             Skip
           </Button>
         </View>

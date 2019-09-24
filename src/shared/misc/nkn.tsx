@@ -4,6 +4,7 @@ const rpcCall = require('nkn-client/lib/rpc');
 import {
   setBalance,
   confirmTransaction,
+  addTransaction,
 } from '../redux/actions/walletActionCreators';
 import {
   receiveMessage,
@@ -18,14 +19,14 @@ import {Decimal} from 'decimal.js';
 import MESSAGE_TYPES from '../redux/constants/messageTypes';
 import {AppState} from '../redux/reducers';
 import store from '../redux/store';
-import {getAddressFromPubKey} from './util';
+import {unmarshalCoinbase} from './util';
+import * as RNFS from 'react-native-fs';
+import {bytesToHex} from 'nkn-client/lib/crypto/tools';
+import {programHashStringToAddress} from 'nkn-wallet/lib/crypto/protocol';
+import {UserPayload} from '../models/payloads';
 
 const nknClient = require('nkn-client');
 const msgpack = require('msgpack-lite');
-import * as RNFS from 'react-native-fs';
-import {hexToBytes, bytesToHex} from 'nkn-client/lib/crypto/tools';
-import * as tools from 'nkn-wallet/lib/crypto/tools';
-import {programHashStringToAddress} from 'nkn-wallet/lib/crypto/protocol';
 
 const BUCKET = 0;
 const FEE = 0.00000001;
@@ -83,189 +84,6 @@ const TRANSACTION_TYPES = {
 };
 
 const publicKeyLength = 64;
-
-const unmarshalCoinbase = (hexString: string) => {
-  let result = {
-    sender: [],
-    recipient: [],
-    amount: 0,
-  };
-
-  const data = hexToBytes(hexString);
-  const length = data.length;
-  let index = 0;
-
-  while (index < length) {
-    let preIndex = index;
-    let wire = 0;
-    for (let shift = 0; ; shift += 7) {
-      if (shift >= 64) {
-        return 'ErrIntOverflowTransaction';
-      }
-
-      if (index >= length) {
-        return 'Error Unexpected length';
-      }
-
-      let b = data[index];
-      index++;
-      wire |= (b & 0x7f) << shift;
-      if (b < 0x80) {
-        break;
-      }
-    }
-
-    let fieldNum = wire >> 3;
-    let wireType = wire & 0x7;
-
-    if (wireType == 4) {
-      debugger;
-      return '';
-    }
-
-    if (fieldNum <= 0) {
-      debugger;
-      return '';
-    }
-
-    switch (fieldNum) {
-      case 1: {
-        if (wireType != 2) {
-          debugger;
-          return '';
-        }
-
-        let byteLength = 0;
-        for (let shift = 0; ; shift += 7) {
-          if (shift >= 64) {
-            return 'ErrIntOverflowTransaction';
-          }
-
-          if (index >= length) {
-            return 'Error Unexpected length';
-          }
-
-          let b = data[index];
-          index++;
-          byteLength |= (b & 0x7f) << shift;
-          if (b < 0x80) {
-            break;
-          }
-        }
-
-        if (byteLength < 0) {
-          debugger;
-          return '';
-        }
-
-        let postIndex = index + byteLength;
-        if (postIndex < 0) {
-        }
-
-        if (postIndex > length) {
-          debugger;
-          return '';
-        }
-
-        result.sender = result.sender.concat(data.slice(index, postIndex));
-        if (!result.sender) {
-          result.sender = [];
-        }
-
-        index = postIndex;
-        break;
-      }
-
-      case 2: {
-        if (wireType != 2) {
-          debugger;
-          return '';
-        }
-
-        let byteLength = 0;
-        for (let shift = 0; ; shift += 7) {
-          if (shift >= 64) {
-            return 'ErrIntOverflowTransaction';
-          }
-
-          if (index >= length) {
-            return 'Error Unexpected length';
-          }
-
-          let b = data[index];
-          index++;
-          byteLength |= (b & 0x7f) << shift;
-          if (b < 0x80) {
-            break;
-          }
-        }
-
-        if (byteLength < 0) {
-          debugger;
-          return '';
-        }
-
-        let postIndex = index + byteLength;
-        if (postIndex < 0) {
-          debugger;
-          return '';
-        }
-
-        if (postIndex > length) {
-          debugger;
-          return '';
-        }
-
-        result.recipient = result.recipient.concat(
-          data.slice(index, postIndex),
-        );
-        if (!result.recipient) {
-          result.recipient = [];
-        }
-
-        index = postIndex;
-
-        break;
-      }
-
-      case 3: {
-        if (wireType != 0) {
-          return '';
-        }
-
-        result.amount = 0;
-        for (let shift = 0; ; shift += 7) {
-          if (shift >= 64) {
-            debugger;
-            return 'ErrIntOverflowTransaction';
-          }
-
-          if (index >= length) {
-            debugger;
-            return 'Error Unexpected length';
-          }
-
-          let b = data[index];
-          index++;
-          result.amount |= (b & 0x7f) << shift;
-          if (b < 0x80) {
-            break;
-          }
-        }
-
-        break;
-      }
-
-      default: {
-        index = preIndex;
-
-        break;
-      }
-    }
-  }
-
-  return result;
-};
 
 export default class NknService {
   static client: any;
@@ -400,40 +218,52 @@ export default class NknService {
             }
 
             case MESSAGE_TYPES.CONTACT.ACCEPT: {
-              const avatarDataBase64 = decoded.avatarData;
-              const dirPath = `${RNFS.DocumentDirectoryPath}/avatars/${publicKey}`;
-              RNFS.mkdir(dirPath)
-                .then(x => {
-                  const filePath = `${dirPath}/${fromUserId}`;
-                  RNFS.writeFile(filePath, avatarDataBase64, 'base64')
-                    .then(y => {
-                      dispatch(
-                        addContactSuccess({
-                          userId: publicKey,
-                          contactId: fromUserId,
-                          acceptedOn: new Date(),
-                          avatarDataBase64,
-                          path: filePath,
-                        }),
-                      );
-                    })
-                    .catch(err => {});
-                })
-                .catch(e => {});
+              if (decoded.avatarData) {
+                const avatarDataBase64 = decoded.avatarData;
+                const dirPath = `${RNFS.DocumentDirectoryPath}/avatars/${publicKey}`;
+                RNFS.mkdir(dirPath)
+                  .then(x => {
+                    const filePath = `${dirPath}/${fromUserId}`;
+                    RNFS.writeFile(filePath, avatarDataBase64, 'base64')
+                      .then(y => {
+                        dispatch(
+                          addContactSuccess({
+                            userId: publicKey,
+                            contactId: fromUserId,
+                            acceptedOn: new Date(),
+                            avatarDataBase64,
+                            path: filePath,
+                          }),
+                        );
+                      })
+                      .catch(err => {});
+                  })
+                  .catch(e => {});
+              } else {
+                dispatch(
+                  addContactSuccess({
+                    userId: publicKey,
+                    contactId: fromUserId,
+                    acceptedOn: new Date(),
+                  }),
+                );
+              }
 
               const avatarSource = getState().auth.currentUser.avatarSource;
-              const avatarUri = avatarSource.uri;
-              RNFS.readFile(avatarUri, 'base64').then((data: string) => {
-                const encodedMessage = msgpack.encode({
-                  type: MESSAGE_TYPES.CONTACT.UPDATE_IMAGE,
-                  avatarData: data,
-                });
+              if (avatarSource) {
+                const avatarUri = avatarSource.uri;
+                RNFS.readFile(avatarUri, 'base64').then((data: string) => {
+                  const encodedMessage = msgpack.encode({
+                    type: MESSAGE_TYPES.CONTACT.UPDATE_IMAGE,
+                    avatarData: data,
+                  });
 
-                client
-                  .send(fromUserId, encodedMessage)
-                  .then(x => console.log(x))
-                  .catch(e => console.log(e));
-              });
+                  client
+                    .send(fromUserId, encodedMessage)
+                    .then(x => console.log(x))
+                    .catch(e => console.log(e));
+                });
+              }
 
               break;
             }
@@ -464,7 +294,6 @@ export default class NknService {
         }
       },
     );
-
     client.on('block', (block: any) => {
       console.log('***BLOCK received', block);
       const {transactions} = block;
@@ -472,10 +301,10 @@ export default class NknService {
       const savedUsers = state.auth.savedUsers;
 
       let unconfirmed: any[] = [];
-      savedUsers.forEach((x: any) => {
-        let itemsToPush = state.wallet.txHistory[x.userId].filter(
-          (y: any) => !y.confirmed,
-        );
+      savedUsers.forEach((user: UserPayload) => {
+        let itemsToPush = state.wallet.txHistory[user.userId]
+          .filter((x: any) => !x.confirmed)
+          .map(x => ({...x, userId: user.userId, address: user.address}));
 
         if (itemsToPush && itemsToPush.length) {
           unconfirmed.push(...itemsToPush);
@@ -485,8 +314,16 @@ export default class NknService {
       for (let i = 0; i < transactions.length; i++) {
         const tx = transactions[i];
         const unconfirmedTx = unconfirmed.find(x => x.txId == tx.hash);
+
         if (unconfirmedTx) {
-          dispatch(confirmTransaction({txId: unconfirmedTx.txId}));
+          debugger;
+          const confirmTxPayload = {
+            txId: unconfirmedTx.txId,
+            userId: unconfirmedTx.userId,
+            address: unconfirmedTx.address,
+          };
+
+          dispatch(confirmTransaction(confirmTxPayload));
           continue;
         }
 
@@ -496,15 +333,28 @@ export default class NknService {
           type == TRANSACTION_TYPES.TRANSFER_ASSET
         ) {
           const payload = tx.payloadData;
-          let details = NknService.getTxDetailsFromPayload(payload);
-          let toUser = savedUsers.find(x => x.address == details.to);
-          let fromUser = savedUsers.find(x => x.address == details.from);
-          if (toUser) {
-            
+          const details = NknService.getTxDetailsFromPayload(payload);
+          if (details.amount > 1) {
+            continue;
           }
 
-          if (fromUser) {
+          debugger;
+          const toLocalUser = savedUsers.find(x => x.address == details.to);
+          if (toLocalUser) {
+            const addTxPayload = NknService.getAddTxPayload(
+              toLocalUser,
+              details,
+            );
+            dispatch(addTransaction(addTxPayload));
+          }
 
+          const fromLocalUser = savedUsers.find(x => x.address == details.from);
+          if (fromLocalUser) {
+            const addTxPayload = NknService.getAddTxPayload(
+              fromLocalUser,
+              details,
+            );
+            dispatch(addTransaction(addTxPayload));
           }
         }
       }
@@ -517,4 +367,20 @@ export default class NknService {
       dispatch(setBalance(payload));
     });
   };
+
+  static getAddTxPayload(user: UserPayload, details: any) {
+    const addTxPayload = {
+      userId: user.userId,
+      change: user.address == details.to ? details.amount : details.amount * -1,
+      tx: {
+        from: details.from,
+        to: details.to,
+        amount: details.amount,
+        success: true,
+        confirmed: true,
+      },
+    };
+
+    return addTxPayload;
+  }
 }

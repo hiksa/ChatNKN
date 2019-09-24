@@ -6,6 +6,7 @@ const SCREENS = {
   Auth: {
     Login: 'Login',
     Register: 'Register',
+    RegisterSuccess: 'RegisterSuccess',
     Faucet: 'Faucet',
     FaucetSuccess: 'FaucetSuccess',
     AvatarSelect: 'AvatarSelect',

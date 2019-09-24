@@ -108,10 +108,7 @@ export const register = (payload: RegisterPayload, ownProps: any) => {
 
       Navigation.push(ownProps.componentId, {
         component: {
-          name: SCREENS.Auth.Faucet,
-          passProps: {
-            nextScreen: 'avatarSelect',
-          },
+          name: SCREENS.Auth.RegisterSuccess,
         },
       });
 

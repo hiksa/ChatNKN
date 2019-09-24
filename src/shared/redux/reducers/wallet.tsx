@@ -58,20 +58,6 @@ export default (state: State = initialState, action: any): State => {
       };
     }
 
-    // case ACTION_TYPES.FAUCET.CLAIM_ATTEMPT: {
-    //     const {userId} = action;
-    //     return {
-    //         ...state,
-    //         txHistory: {
-    //             ...state.txHistory,
-    //             [userId]: [
-    //                 ...state.txHistory[userId],
-    //                 {...action.payload, confirmed: false, success: false}
-    //             ]
-    //         }
-    //     }
-    // }
-
     case ACTION_TYPES.FAUCET.CLAIM_FAIL:
     case ACTION_TYPES.FAUCET.CLAIM_SUCCESS: {
       const {userId} = action;
@@ -88,8 +74,7 @@ export default (state: State = initialState, action: any): State => {
     }
 
     case ACTION_TYPES.WALLET.TX_CONFIRM: {
-      const {userId} = action;
-      const {txId} = action.payload;
+      const {userId, txId} = action.payload;
 
       return {
         ...state,
@@ -125,6 +110,19 @@ export default (state: State = initialState, action: any): State => {
     case ACTION_TYPES.WALLET.SEND_FAIL: {
       return {
         ...state,
+      };
+    }
+
+    case ACTION_TYPES.WALLET.ADD_TRANSACTION: {
+      const {userId, change, tx} = action.payload;
+      debugger;
+      return {
+        ...state,
+        balance: state.balance + change,
+        txHistory: {
+          ...state.txHistory,
+          [userId]: [{...tx}, ...state.txHistory[userId]],
+        },
       };
     }
 

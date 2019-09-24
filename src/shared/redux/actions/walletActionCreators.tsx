@@ -7,6 +7,13 @@ import {SetBalancePayload} from '../../models/payloads';
 import Toast from 'react-native-root-toast';
 import NknService from '../../misc/nkn';
 
+export const addTransaction = (payload: any) => {
+  return {
+    type: ACTION_TYPES.WALLET.ADD_TRANSACTION,
+    payload,
+  };
+};
+
 export const addBalance = (payload: any) => {
   return {
     type: ACTION_TYPES.WALLET.ADD_BALANCE,
@@ -144,7 +151,7 @@ export const sendFail = (payload: any) => {
 
 export const confirmTransaction = (payload: any) => {
   return (dispatch: Function, getState: Function) => {
-    const {userId, address} = getState().auth.currentUser;
+    const {address} = payload;
 
     Toast.show('Transaction confirmed.', {
       duration: Toast.durations.SHORT,
@@ -152,15 +159,13 @@ export const confirmTransaction = (payload: any) => {
     });
 
     NknService.wallet.getBalance().then((x: Decimal) => {
-      debugger;
       const balancePayload = {balance: x.toNumber(), address: address};
       dispatch(setBalance(balancePayload));
     });
 
     dispatch({
       type: ACTION_TYPES.WALLET.TX_CONFIRM,
-      payload,
-      userId,
+      payload
     });
   };
 };

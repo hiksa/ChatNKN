@@ -38,7 +38,7 @@
     "punycode": "^1.4.1",
     "querystring-es3": "^0.2.1",
     "react": "16.8.6",
-    "react-native": "0.60.5",
+    "react-native": "0.61.0",
     "react-native-action-button": "^2.8.5",
     "react-native-camera": "^3.4.0",
     "react-native-crypto": "^2.2.0",

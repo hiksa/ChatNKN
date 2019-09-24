@@ -33,9 +33,10 @@ export default class ContactListItem extends React.Component<Props, State> {
 
   render() {
     const {username, lastMessageSent, lastMessageText} = this.props;
-    const messageText =
-      lastMessageText.substr(0, 30) +
-      (lastMessageText.length > 30 ? '...' : '');
+    const messageText = lastMessageText
+      ? lastMessageText.substr(0, 30) +
+        (lastMessageText.length > 30 ? '...' : '')
+      : '';
     return (
       <ListItem onPress={this.handleOnClick}>
         <Avatar source={{uri: 'file://' + this.props.path}} />

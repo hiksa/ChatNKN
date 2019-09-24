@@ -1,10 +1,9 @@
 import * as React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Button, Text, Layout, Input} from 'react-native-ui-kitten';
 import {Navigation} from 'react-native-navigation';
 import {GLOBAL} from '../../styles/global';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {RNCamera} from 'react-native-camera';
 
 export interface Props {
@@ -19,6 +18,7 @@ interface State {
   nickname: string;
   caption: string;
   status: string;
+  cameraOn: boolean;
 }
 
 const publicKeyLength = 64;
@@ -28,12 +28,12 @@ class AddContact extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    console.log(props);
     this.state = {
       contactId: '',
       nickname: '',
       caption: '',
       status: '',
+      cameraOn: false,
     };
   }
 
@@ -137,6 +137,35 @@ class AddContact extends React.PureComponent<Props, State> {
     });
   };
 
+  toggleCamera = () => {
+    this.setState({cameraOn: !this.state.cameraOn});
+  };
+
+  renderCamera = () => {
+    if (this.state.cameraOn) {
+      return (
+        <QRCodeScanner
+          cameraStyle={{
+            width: 280,
+            height: 280,
+            marginTop: 10,
+            alignSelf: 'center',
+            justifyContent: 'center',
+          }}
+          cameraProps={{
+            ratio: '1:1',
+          }}
+          onRead={this.onScan.bind(this)}
+          showMarker={true}
+          vibrate={true}
+          reactivateTimeout={300}
+        />
+      );
+    } else {
+      return null;
+    }
+  };
+
   render() {
     return (
       <Layout style={[{flex: 1, padding: 20}]}>
@@ -174,34 +203,13 @@ class AddContact extends React.PureComponent<Props, State> {
             </Button>
           </View>
         </Layout>
-        <Text>Scan contact id</Text>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          <QRCodeScanner
-            cameraStyle={{
-              width: 280,
-              height: 280,
-              marginTop: 10,
-              alignSelf: 'center',
-              justifyContent: 'center',
-            }}
-            cameraProps={{
-              ratio: '1:1',
-            }}
-            onRead={this.onScan.bind(this)}
-            showMarker={true}
-            vibrate={true}
-            reactivateTimeout={300}
-            // topContent={
-            //   <Text style={styles.centerText}>
-            //     Go to <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on your computer and scan the QR code.
-            //   </Text>
-            // }
-            // bottomContent={
-            //   <TouchableOpacity style={styles.buttonTouchable}>
-            //     <Text style={styles.buttonText}>OK. Got it!</Text>
-            //   </TouchableOpacity>
-            // }
-          />
+          <TouchableOpacity onPress={this.toggleCamera} style={{marginTop: 10}}>
+            <Text style={{textDecorationLine: 'underline', color: '#3366FF'}}>
+              Scan QR code
+            </Text>
+          </TouchableOpacity>
+          {this.renderCamera()}
         </View>
       </Layout>
     );

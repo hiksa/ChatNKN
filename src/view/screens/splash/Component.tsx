@@ -15,8 +15,8 @@ class Splash extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    setTimeout(() => this.props.init(), 1000);
-    // this.props.init();
+    // setTimeout(() => this.props.init(), 1000);
+    this.props.init();
   }
 
   render() {

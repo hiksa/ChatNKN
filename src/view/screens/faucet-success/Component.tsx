@@ -36,21 +36,29 @@ export default class FaucetSuccess extends React.PureComponent<Props, State> {
   render() {
     return (
       <Layout style={{flex: 1, padding: 20}}>
-        <Text category={'h5'} style={{textAlign: 'center'}}>
-          Success
-        </Text>
-        <Text category={'p1'}>
-          Transaction with id{' '}
-          <Text style={{fontWeight: 'bold'}}>{this.props.txId}</Text> is on it's
-          way to address{' '}
-          <Text style={{fontWeight: 'bold'}}>{this.props.address}</Text>.
-        </Text>
-
-        <Button
-          style={{textAlign: 'center', marginTop: 20}}
-          onPress={this.handleContinue}>
-          Continue
-        </Button>
+        <Layout level={'3'} style={{padding: 30}}>
+          <Text
+            category={'h4'}
+            style={{textAlign: 'center', fontWeight: 'bold'}}>
+            Claim Success
+          </Text>
+          <Text style={{textAlign: 'center', marginTop: 20}}>
+            Your currency is on it's way!
+          </Text>
+          <Text
+            category={'p2'}
+            style={{textAlign: 'center', marginTop: 20, marginBottom: 10}}>
+            Tx hash
+          </Text>
+          <Text
+            category={'p2'}
+            style={{textAlign: 'center', marginBottom: 40, fontWeight: 'bold'}}>
+            {this.props.txId}
+          </Text>
+          <Button style={{textAlign: 'center'}} onPress={this.handleContinue}>
+            Continue
+          </Button>
+        </Layout>
       </Layout>
     );
   }

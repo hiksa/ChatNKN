@@ -48,6 +48,7 @@ const ACTION_TYPES = {
     SEND_FAIL: 'wallet/SEND_FAIL',
     RECEIVE: 'wallet/RECEIVE',
     TX_CONFIRM: 'wallet/TX_CONFIRM',
+    ADD_TRANSACTION: 'wallet/ADD_TRANSACTION'
   },
 
   FAUCET: {

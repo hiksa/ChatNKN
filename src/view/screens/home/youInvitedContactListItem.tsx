@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {View} from 'react-native';
 import {Avatar, Text, ListItem, Button} from 'react-native-ui-kitten';
+import TimeAgo from 'react-native-timeago';
 
 export interface Props {
   username: string;
@@ -29,6 +30,7 @@ export default class YouInvitedContactListItem extends React.Component<
   componentDidMount() {}
 
   timeDifference(previous: number) {
+    debugger;
     let current = new Date().getTime();
     let msPerMinute = 60 * 1000;
     let msPerHour = msPerMinute * 60;
@@ -53,9 +55,11 @@ export default class YouInvitedContactListItem extends React.Component<
     }
   }
 
+  resendInvite = () => {};
+
   render() {
     const {username, deliveredOn} = this.props;
-    const timeAgo = this.timeDifference(new Date(deliveredOn).getTime());
+    // const timeAgo = this.timeDifference(new Date(deliveredOn).getTime());
     return (
       <ListItem style={{flex: 1}}>
         <Avatar
@@ -67,16 +71,31 @@ export default class YouInvitedContactListItem extends React.Component<
             <Text>
               <Text style={{fontWeight: 'bold'}}>{username}</Text>{' '}
               <Text style={{fontSize: 14}}>
-                was invited to become your contact
+                {deliveredOn
+                  ? 'was invited to become your contact'
+                  : 'did not receive your invitation'}
               </Text>
             </Text>
-            <Text style={{fontSize: 12, fontStyle: 'italic'}}>
-              invitation received{' '}
-              <Text
-                style={{fontSize: 12, fontStyle: 'italic', fontWeight: 'bold'}}>
-                {timeAgo}
+            {deliveredOn ? (
+              <Text style={{fontSize: 12, fontStyle: 'italic'}}>
+                invitation received{' '}
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontStyle: 'italic',
+                    fontWeight: 'bold',
+                  }}>
+                  <TimeAgo
+                    time={deliveredOn}
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      fontStyle: 'italic',
+                    }}
+                  />
+                </Text>
               </Text>
-            </Text>
+            ) : null}
           </View>
           <View
             style={{
@@ -84,9 +103,31 @@ export default class YouInvitedContactListItem extends React.Component<
               justifyContent: 'space-around',
               paddingTop: 10,
             }}>
-            <Button onPress={this.handleCancelInvitationClick} size="small">
-              Cancel invitation
-            </Button>
+            {deliveredOn ? (
+              <Button
+                appearance={'outline'}
+                onPress={this.handleCancelInvitationClick}
+                size="small">
+                Cancel
+              </Button>
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                }}>
+                <Button size={'small'} onPress={this.resendInvite}>
+                  resend
+                </Button>
+                <Button
+                  appearance={'outline'}
+                  onPress={this.handleCancelInvitationClick}
+                  size="small">
+                  Cancel
+                </Button>
+              </View>
+            )}
           </View>
         </View>
       </ListItem>

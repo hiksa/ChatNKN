@@ -80,12 +80,27 @@ export const addContactSuccess = (payload: any) => {
 export const acceptInvite = (payload: any) => {
   return (dispatch: Function, getState: Function) => {
     const avatarSource = getState().auth.currentUser.avatarSource;
-    const avatarUri = avatarSource.uri;
+    if (avatarSource) {
+      const avatarUri = avatarSource.uri;
+      fs.readFile(avatarUri, 'base64').then((data: string) => {
+        const encodedMessage = msgpack.encode({
+          type: MESSAGE_TYPES.CONTACT.ACCEPT,
+          avatarData: data,
+        });
 
-    fs.readFile(avatarUri, 'base64').then((data: string) => {
+        NknService.client
+          .send(payload.contactId, encodedMessage)
+          .then(x => console.log(x))
+          .catch(e => console.log(e));
+
+        dispatch({
+          type: ACTION_TYPES.CONTACTS.ACCEPT_INVITATION,
+          payload,
+        });
+      });
+    } else {
       const encodedMessage = msgpack.encode({
         type: MESSAGE_TYPES.CONTACT.ACCEPT,
-        avatarData: data,
       });
 
       NknService.client
@@ -97,7 +112,7 @@ export const acceptInvite = (payload: any) => {
         type: ACTION_TYPES.CONTACTS.ACCEPT_INVITATION,
         payload,
       });
-    });
+    }
   };
 };
 

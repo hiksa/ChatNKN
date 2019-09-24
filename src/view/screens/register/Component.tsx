@@ -25,10 +25,6 @@ export default class Register extends React.PureComponent<Props, State> {
 
   componentDidMount() {}
 
-  navigateToHome = () => {
-    tabbedNavigation();
-  };
-
   handleRegisterSubmit = () => {
     this.props.register(this.state);
   };

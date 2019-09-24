@@ -14,7 +14,7 @@ export interface Props {
   navigation: any;
   logout: Function;
   userId: string;
-  address: string;
+  username: string;
   componentId: string;
 }
 
@@ -59,6 +59,7 @@ export default class Settings extends React.PureComponent<Props, State> {
       <ScrollView style={{flex: 1}}>
         <Layout style={{padding: 20}}>
           <Layout level={'3'} style={{padding: 20, paddingBottom: 50}}>
+            <Text style={{textAlign: 'center'}}>{this.props.username}</Text>
             <Layout
               level={'3'}
               onStartShouldSetResponder={this.handleCopyUserId}>

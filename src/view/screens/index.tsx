@@ -13,6 +13,7 @@ import {SCREENS} from '../../constants/screen';
 import * as Splash from './splash';
 import * as Login from './login';
 import * as Register from './register';
+import * as RegisterSuccess from './register-success';
 import * as Faucet from './faucet';
 import * as Success from './faucet-success';
 import * as AvatarSelect from './avatar-select';
@@ -50,6 +51,10 @@ export function registerScreens(redux: any) {
 
   registerComponent(redux)(SCREENS.Auth.Login, Login.default);
   registerComponent(redux)(SCREENS.Auth.Register, Register.default);
+  registerComponent(redux)(
+    SCREENS.Auth.RegisterSuccess,
+    RegisterSuccess.default,
+  );
   registerComponent(redux)(SCREENS.Auth.Faucet, Faucet.default);
   registerComponent(redux)(SCREENS.Auth.FaucetSuccess, Success.default);
   registerComponent(redux)(SCREENS.Auth.AvatarSelect, AvatarSelect.default);
