@@ -4,7 +4,7 @@ import {
   acceptInvite,
   denyInvite,
   cancelInvitation,
-} from '../../../../shared/redux/actions/contactsActionCreators';
+} from '../../../shared/redux/actions/contactsActionCreators';
 // import { startChat } from '../../../../shared/redux/actions/chatActionCreators';
 
 const mapStateToProps = (state: any) => {

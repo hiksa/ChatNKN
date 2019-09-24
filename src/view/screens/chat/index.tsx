@@ -3,7 +3,7 @@ import Component from './Component';
 import {
   sendMessage,
   seeMessage,
-} from '../../../../shared/redux/actions/chatActionCreators';
+} from '../../../shared/redux/actions/chatActionCreators';
 
 const mapStateToProps = (state: any, ownProps: any) => {
   const {userId} = state.auth.currentUser;
@@ -14,7 +14,6 @@ const mapStateToProps = (state: any, ownProps: any) => {
   const messages = state.chat.chats[userId][chatId].map(x => ({
     ...x,
     user: {...x.user, avatar: `file://${avatar}`},
-    // user: {...x.user, avatar: require('../../assets/images/avatar.png')},
   }));
 
   return {

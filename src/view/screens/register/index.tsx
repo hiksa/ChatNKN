@@ -1,7 +1,6 @@
 import {connect} from 'react-redux';
-
 import Component from './Component';
-import {register} from '../../../../shared/redux/actions/authActionCreators';
+import {register} from '../../../shared/redux/actions/authActionCreators';
 
 const mapStateToProps = (state: any) => ({});
 
@@ -15,4 +14,5 @@ const registerContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(Component);
+
 export default registerContainer;

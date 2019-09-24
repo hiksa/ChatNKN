@@ -8,6 +8,7 @@ const SCREENS = {
     Register: 'Register',
     Faucet: 'Faucet',
     FaucetSuccess: 'FaucetSuccess',
+    AvatarSelect: 'AvatarSelect',
   },
 
   Tabs: {

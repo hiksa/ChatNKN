@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import Component from './Component';
-import {initiateApp} from '../../../../shared/redux/actions/authActionCreators';
+import {initiateApp} from '../../../shared/redux/actions/authActionCreators';
 
 const mapStateToProps = (state: any) => ({});
 

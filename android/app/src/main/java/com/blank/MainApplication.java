@@ -29,6 +29,7 @@ import com.reactnativenavigation.react.NavigationReactNativeHost;
 import com.reactnativenavigation.react.ReactGateway;
 
 import com.github.wumke.RNLocalNotifications.RNLocalNotificationsPackage;
+// import com.wix.reactnativenotifications.RNNotificationsPackage;
 
 import java.util.List;
 import java.util.Arrays;

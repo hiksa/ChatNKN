@@ -1,22 +1,7 @@
 import * as React from 'react';
-import {
-  View,
-  Image,
-  SafeAreaView,
-  FlatList,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
-
-import {List, ListItem, Button, Text, Layout} from 'react-native-ui-kitten';
-
-import {showLoginScreen} from '../../../navigators/navigation';
-import {BUTTON_DEFAULT} from '../../elements/buttons';
-import {PersistGate} from 'redux-persist/integration/react';
-import store, {persistor} from '../../../../shared/redux/store';
-import {Provider} from 'react-redux';
+import {SafeAreaView, ScrollView, StyleSheet} from 'react-native';
+import {List, Button, Text, Layout} from 'react-native-ui-kitten';
 import UserBalance from './userBalance';
-import {CText} from '../../elements/custom';
 import {SCREENS} from '../../../constants/screen';
 import {Navigation} from 'react-native-navigation';
 import TransactionListItem from './transactionListItem';
@@ -30,7 +15,7 @@ export interface Props {
 
 interface State {}
 
-class Wallet extends React.PureComponent<any, State> {
+export default class Wallet extends React.PureComponent<any, State> {
   constructor(props: any) {
     super(props);
   }
@@ -124,5 +109,3 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 });
-
-export default Wallet;

@@ -132,6 +132,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         missingDimensionStrategy "RNN.reactNativeVersion", "reactNative60"
+        missingDimensionStrategy "RNNotifications.reactNativeVersion", "reactNative60"
         missingDimensionStrategy 'react-native-camera', 'general'
         versionCode 1
         versionName "1.0"
@@ -198,6 +199,7 @@ dependencies {
     implementation project(':react-native-local-notifications')
     implementation project(':react-native-image-picker')
     implementation project(':react-native-fs')
+    implementation project(':reactnativenotifications')
 
     if (enableHermes) {
       def hermesPath = "../../node_modules/hermesvm/android/";

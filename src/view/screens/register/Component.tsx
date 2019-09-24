@@ -1,13 +1,5 @@
 import * as React from 'react';
-import {View, Image, SafeAreaView, TextInput} from 'react-native';
-
-import {PersistGate} from 'redux-persist/integration/react';
-import {Provider} from 'react-redux';
-
 import {tabbedNavigation} from '../../../navigators/navigation';
-import {BUTTON_DEFAULT} from '../../elements/buttons';
-import {CText} from '../../elements/custom';
-import store, {persistor} from '../../../../shared/redux/store';
 import {Layout, Text, Input, Button} from 'react-native-ui-kitten';
 
 export interface Props {
@@ -20,7 +12,7 @@ interface State {
   repeatPassword: string;
 }
 
-class Register extends React.PureComponent<Props, State> {
+export default class Register extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -83,5 +75,3 @@ class Register extends React.PureComponent<Props, State> {
     );
   }
 }
-
-export default Register;

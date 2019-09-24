@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ScrollView, FlatList, Image, View} from 'react-native';
+import {View} from 'react-native';
 import {Avatar, Text, ListItem} from 'react-native-ui-kitten';
 import TimeAgo from 'react-native-timeago';
 
@@ -7,7 +7,6 @@ export interface Props {
   username: string;
   userId: string;
   imageData: string;
-  //  imageUrl: string;
   handleClick: Function;
   lastMessageText: string;
   lastMessageSent: string;

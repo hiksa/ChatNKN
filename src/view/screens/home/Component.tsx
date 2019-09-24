@@ -1,17 +1,6 @@
 import * as React from 'react';
-import {ScrollView, FlatList, Image, View, StyleSheet} from 'react-native';
-import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/integration/react';
-import store, {persistor} from '../../../../shared/redux/store';
-import {
-  List,
-  ListItem,
-  Button,
-  Text,
-  Layout,
-  TabView,
-  Tab,
-} from 'react-native-ui-kitten';
+import {ScrollView, FlatList, View, StyleSheet} from 'react-native';
+import {TabView, Tab} from 'react-native-ui-kitten';
 import ActionButton from 'react-native-action-button';
 
 import {SCREENS} from '../../../constants/screen';
@@ -20,8 +9,7 @@ import ContactListItem from './contactListItem';
 import PendingContactListItem from './pendingContactListItem';
 import {TYPOGRAPHY} from '../../styles/typography';
 import YouInvitedContactListItem from './youInvitedContactListItem';
-
-declare var window: any;
+// import {NotificationsAndroid} from 'react-native-notifications';
 
 export interface Props {
   componentId: string;
@@ -39,7 +27,7 @@ interface State {
   selectedIndex: number;
 }
 
-class Home extends React.PureComponent<Props, State> {
+export default class Home extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -185,8 +173,6 @@ class Home extends React.PureComponent<Props, State> {
     );
   }
 }
-
-export default Home;
 
 const styles = StyleSheet.create({
   container: {

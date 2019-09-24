@@ -44,7 +44,7 @@ export const goToClaim = () => {
 };
 
 export const showLoginScreen = () => {
-  Navigation.setRoot({
+  return Navigation.setRoot({
     root: {
       stack: {
         id: 'Auth',

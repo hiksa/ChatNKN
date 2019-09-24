@@ -1,10 +1,9 @@
 import {Navigation} from 'react-native-navigation';
-import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 import {Provider, ConnectedComponentClass} from 'react-redux';
 import React from 'react';
 import {PersistGate} from 'redux-persist/integration/react';
 import {mapping, light as lightTheme} from '@eva-design/eva';
-import store, {persistor} from '../../../shared/redux/store';
+import store, {persistor} from '../../shared/redux/store';
 
 import {ApplicationProvider} from 'react-native-ui-kitten';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
@@ -16,6 +15,7 @@ import * as Login from './login';
 import * as Register from './register';
 import * as Faucet from './faucet';
 import * as Success from './faucet-success';
+import * as AvatarSelect from './avatar-select';
 import * as Home from './home';
 import * as Chat from './chat';
 import * as Wallet from './wallet';
@@ -52,6 +52,7 @@ export function registerScreens(redux: any) {
   registerComponent(redux)(SCREENS.Auth.Register, Register.default);
   registerComponent(redux)(SCREENS.Auth.Faucet, Faucet.default);
   registerComponent(redux)(SCREENS.Auth.FaucetSuccess, Success.default);
+  registerComponent(redux)(SCREENS.Auth.AvatarSelect, AvatarSelect.default);
 
   registerComponent(redux)(SCREENS.Tabs.Home, Home.default);
   registerComponent(redux)(SCREENS.Tabs.Chat, Chat.default);

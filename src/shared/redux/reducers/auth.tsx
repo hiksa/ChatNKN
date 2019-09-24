@@ -46,7 +46,8 @@ export default (state: State = initialState, action: any): State => {
 
     case ACTION_TYPES.AUTH.LOGOUT: {
       return {
-        ...initialState,
+        ...state,
+        currentUser: {...initialState.currentUser},
       };
     }
 

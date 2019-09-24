@@ -6,10 +6,11 @@ import {
   PixelRatio,
   TouchableOpacity,
 } from 'react-native';
-import {Navigation} from 'react-native-navigation';
+
 import {Layout, Text, Button} from 'react-native-ui-kitten';
 import ImagePicker from 'react-native-image-picker';
 import Toast from 'react-native-root-toast';
+import {tabbedNavigation} from '../../../navigators/navigation';
 
 export interface Props {
   username: string;
@@ -23,7 +24,7 @@ interface State {
   canSave: boolean;
 }
 
-export default class EditProfile extends React.PureComponent<Props, State> {
+export default class AvatarSelect extends React.PureComponent<Props, State> {
   constructor(props: any) {
     super(props);
 
@@ -61,10 +62,11 @@ export default class EditProfile extends React.PureComponent<Props, State> {
   handleSaveChanges = () => {
     this.props.setImage(this.state.avatarSource);
     this.setState({canSave: false});
+    setTimeout(tabbedNavigation, 2000);
   };
 
   handleCancel = () => {
-    Navigation.pop(this.props.componentId);
+    tabbedNavigation();
   };
 
   render() {
@@ -95,7 +97,7 @@ export default class EditProfile extends React.PureComponent<Props, State> {
             Save
           </Button>
           <Button onPress={this.handleCancel} appearance={'outline'}>
-            Back
+            Skip
           </Button>
         </View>
       </Layout>

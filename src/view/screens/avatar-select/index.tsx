@@ -1,7 +1,6 @@
 import {connect} from 'react-redux';
 import Component from './Component';
 import {setImage} from '../../../shared/redux/actions/authActionCreators';
-import {getAddressFromPubKey} from '../../../shared/misc/util';
 
 const mapStateToProps = (state: any) => {
   const {username, avatarSource} = state.auth.currentUser;
@@ -14,8 +13,7 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: Function) => {
   return {
-    setImage: (payload: any, componentId: string) =>
-      dispatch(setImage(payload)),
+    setImage: (payload: any) => dispatch(setImage(payload)),
   };
 };
 

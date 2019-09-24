@@ -1,7 +1,8 @@
 import * as React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Linking} from 'react-native';
 import {ListItem, Avatar} from 'react-native-ui-kitten';
 import TimeAgo from 'react-native-timeago';
+import Toast from 'react-native-root-toast';
 
 export interface Props {
   txId: string;
@@ -17,6 +18,9 @@ export interface Props {
 
 interface State {}
 
+const transactionNotConfirmedMessage =
+  'Transaction not confirmed yet. Please wait a few minutes and try again.';
+
 export default class TransactionListItem extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -24,7 +28,25 @@ export default class TransactionListItem extends React.Component<Props, State> {
 
   handleTransactionClick = () => {};
 
-  handleItemPressed = () => {};
+  handleItemPressed = () => {
+    // if (!this.props.confirmed) {
+    //   Toast.show(transactionNotConfirmedMessage, {
+    //     duration: Toast.durations.SHORT,
+    //     position: Toast.positions.TOP,
+    //   });
+
+    //   return;
+    // }
+
+    const url = `https://explorer.nknx.org/transactions/${this.props.txId}`;
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("Don't know how to open URI: " + url);
+      }
+    });
+  };
 
   render() {
     const formattedDate = new Date(this.props.date).toLocaleDateString('en-US');

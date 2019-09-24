@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {ScrollView, FlatList, Image, View} from 'react-native';
-import {Avatar, Text, ListItem, Button, Layout} from 'react-native-ui-kitten';
+import {View} from 'react-native';
+import {Avatar, Text, ListItem, Button} from 'react-native-ui-kitten';
 
 export interface Props {
   username: string;

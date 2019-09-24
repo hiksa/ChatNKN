@@ -1,17 +1,15 @@
 import {PURGE, REHYDRATE} from 'redux-persist';
-import * as nknWallet from 'nkn-wallet';
 import {ACTION_TYPES} from '../constants/actionTypes';
 import MESSAGE_TYPES from '../constants/messageTypes';
 import {
   showLoginScreen,
   showRegisterScreen,
   tabbedNavigation,
-} from '../../../src/navigators/navigation';
+} from '../../../navigators/navigation';
 import {useDispatch} from 'react-redux';
+import NknService from '../../misc/nkn';
 
 var msgpack = require('msgpack-lite');
-
-declare var window: any;
 
 export const markSeen = (payload: any) => {
   return {
@@ -33,7 +31,7 @@ export const markReceived = (payload: any) => {
 
 export const seeMessage = (payload: any) => {
   return (dispatch: Function, getState: Function) => {
-    const client = window.nknClient;
+    const client = NknService.client;
     const {chatId, message, userId} = payload;
 
     const encoded = msgpack.encode({
@@ -58,7 +56,7 @@ export const seeMessage = (payload: any) => {
 
 export const sendMessage = (payload: any) => {
   return (dispatch: Function, getState: Function) => {
-    const client = window.nknClient;
+    const client = NknService.client;
     const {chatId, message} = payload;
 
     const encodedMessage = msgpack.encode({

@@ -1,12 +1,11 @@
 import {ACTION_TYPES} from '../constants/actionTypes';
-import {SCREENS} from '../../../src/constants/screen';
+import {SCREENS} from '../../../constants/screen';
 import {Navigation} from 'react-native-navigation';
-import tabbedNavigation from '../../../src/navigators/navigation';
+import tabbedNavigation from '../../../navigators/navigation';
 import Decimal from 'decimal.js';
 import {SetBalancePayload} from '../../models/payloads';
 import Toast from 'react-native-root-toast';
-
-declare var window: any;
+import NknService from '../../misc/nkn';
 
 export const addBalance = (payload: any) => {
   return {
@@ -43,7 +42,11 @@ export const claimAttempt = (payload: any) => {
   };
 };
 
-export const claimSuccess = (payload: any, componentId: string) => {
+export const claimSuccess = (
+  payload: any,
+  componentId: string,
+  nextScreen: string = 'home',
+) => {
   return (dispatch: Function, getState: Function) => {
     const {txId, toAddress} = payload;
     Navigation.push(componentId, {
@@ -52,6 +55,7 @@ export const claimSuccess = (payload: any, componentId: string) => {
         passProps: {
           txId: txId,
           address: toAddress,
+          nextScreen,
         },
       },
     });
@@ -66,11 +70,26 @@ export const claimSuccess = (payload: any, componentId: string) => {
   };
 };
 
-export const claimFail = (payload: any) => {
+export const claimFail = (
+  payload: any,
+  componentId: string,
+  nextScreen: string = 'home',
+) => {
   return (dispatch: Function, getState: Function) => {
     const {userId} = getState().auth.currentUser;
 
-    tabbedNavigation();
+    if (nextScreen == 'home') {
+      tabbedNavigation();
+    } else {
+      Navigation.push(componentId, {
+        component: {
+          name: SCREENS.Auth.AvatarSelect,
+          passProps: {
+            nextScreen,
+          },
+        },
+      });
+    }
 
     dispatch({
       type: ACTION_TYPES.FAUCET.CLAIM_FAIL,
@@ -87,7 +106,7 @@ export const sendAttempt = (payload: any, componentId: string) => {
 
     Navigation.pop(componentId);
 
-    window.nknWallet
+    NknService.wallet
       .transferTo(to, amount)
       .then((txId: string) => {
         const date = new Date();
@@ -132,7 +151,7 @@ export const confirmTransaction = (payload: any) => {
       position: Toast.positions.TOP,
     });
 
-    window.nknWallet.getBalance().then((x: Decimal) => {
+    NknService.wallet.getBalance().then((x: Decimal) => {
       debugger;
       const balancePayload = {balance: x.toNumber(), address: address};
       dispatch(setBalance(balancePayload));

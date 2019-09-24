@@ -1,13 +1,7 @@
 import * as React from 'react';
-import {View, Text, TouchableHighlight} from 'react-native';
-import {PersistGate} from 'redux-persist/integration/react';
-import {Provider} from 'react-redux';
+import {View, Text, TouchableHighlight, StyleSheet} from 'react-native';
 import Clipboard from '@react-native-community/react-native-clipboard';
 
-import styles from './styles';
-import {CText} from '../../elements/custom';
-import {BUTTON_DEFAULT} from '../../elements/buttons';
-import store, {persistor} from '../../../../shared/redux/store';
 import {goToClaim} from '../../../navigators/navigation';
 import QRCode from 'react-native-qrcode-svg';
 import {Layout, Button} from 'react-native-ui-kitten';
@@ -26,16 +20,12 @@ export interface Props {
 
 interface State {}
 
-class Settings extends React.PureComponent<Props, State> {
+export default class Settings extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
   }
 
   componentDidMount() {}
-
-  handleLogout = () => {
-    this.props.logout();
-  };
 
   handleCopyUserId = (e: any) => {
     Clipboard.setString(this.props.userId);
@@ -45,10 +35,6 @@ class Settings extends React.PureComponent<Props, State> {
     });
 
     return true;
-  };
-
-  handleClaim = () => {
-    goToClaim();
   };
 
   handleEdit = () => {
@@ -77,29 +63,18 @@ class Settings extends React.PureComponent<Props, State> {
               level={'3'}
               onStartShouldSetResponder={this.handleCopyUserId}>
               <Text style={{textAlign: 'center'}}>{this.props.userId}</Text>
-              <Text
-                style={{
-                  marginTop: 10,
-                  fontSize: 12,
-                  fontStyle: 'italic',
-                  textAlign: 'center',
-                }}>
-                tap to copy User Id
-              </Text>
+              <Text style={styles.userIdText}>tap to copy User Id</Text>
             </Layout>
             <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingTop: 60,
-              }}>
-              <QRCode value={this.props.userId} size={250} />
+              style={styles.qrContainer}
+              onStartShouldSetResponder={this.handleCopyUserId}>
+              <QRCode value={this.props.userId} size={200} />
             </View>
           </Layout>
           <Button
             appearance={'outline'}
             style={{marginTop: 30}}
-            onPress={this.handleClaim}>
+            onPress={() => goToClaim()}>
             Claim NKN
           </Button>
           <Button
@@ -108,7 +83,7 @@ class Settings extends React.PureComponent<Props, State> {
             onPress={this.handleEdit}>
             Edit Avatar
           </Button>
-          <Button style={{marginTop: 30}} onPress={this.handleLogout}>
+          <Button style={{marginTop: 30}} onPress={() => this.props.logout()}>
             Logout
           </Button>
         </Layout>
@@ -117,4 +92,15 @@ class Settings extends React.PureComponent<Props, State> {
   }
 }
 
-export default Settings;
+const styles = StyleSheet.create({
+  qrContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 40,
+  },
+  userIdText: {
+    fontSize: 12,
+    fontStyle: 'italic',
+    textAlign: 'center',
+  },
+});

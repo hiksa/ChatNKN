@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import Component from './Component';
-import {purgeStorage} from '../../../../shared/redux/actions/actionCreators';
-import {loginAttempt} from '../../../../shared/redux/actions/authActionCreators';
+import {purgeStorage} from '../../../shared/redux/actions/actionCreators';
+import {loginAttempt} from '../../../shared/redux/actions/authActionCreators';
 
 const mapStateToProps = (state: any) => {
   return {

@@ -1,20 +1,12 @@
 import * as React from 'react';
-import {View, Image, SafeAreaView, TextInput} from 'react-native';
-
-import {PersistGate} from 'redux-persist/integration/react';
-import store, {persistor} from '../../../../shared/redux/store';
-import {Provider} from 'react-redux';
 import {Navigation} from 'react-native-navigation';
 import {tabbedNavigation} from '../../../navigators/navigation';
-import {BUTTON_DEFAULT} from '../../elements/buttons';
-import {CText} from '../../elements/custom';
 import {SCREENS} from '../../../constants/screen';
 import {Layout, Text, Button, Input} from 'react-native-ui-kitten';
 
 export interface Props {
   navigation: any;
   login: Function;
-  purge: Function;
   componentId: string;
 }
 
@@ -23,7 +15,7 @@ interface State {
   password: string;
 }
 
-class Login extends React.PureComponent<Props, State> {
+export default class Login extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -33,9 +25,7 @@ class Login extends React.PureComponent<Props, State> {
     };
   }
 
-  componentDidMount() {
-    //   this.props.purge();
-  }
+  componentDidMount() {}
 
   navigateToHome = () => {
     tabbedNavigation();
@@ -115,5 +105,3 @@ class Login extends React.PureComponent<Props, State> {
     );
   }
 }
-
-export default Login;

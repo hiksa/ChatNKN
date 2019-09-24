@@ -1,8 +1,6 @@
 import * as React from 'react';
-import {View} from 'react-native';
 import RNRecaptcha from 'rn-recaptcha';
-
-import {Layout, Text} from 'react-native-ui-kitten';
+import {Layout} from 'react-native-ui-kitten';
 
 export interface Props {
   address: string;
@@ -12,11 +10,12 @@ export interface Props {
   attemptClaim: Function;
   claimSuccess: Function;
   claimFail: Function;
+  nextScreen: string;
 }
 
 interface State {}
 
-class Faucet extends React.PureComponent<Props, State> {
+export default class Faucet extends React.PureComponent<Props, State> {
   constructor(props: any) {
     super(props);
   }
@@ -28,11 +27,6 @@ class Faucet extends React.PureComponent<Props, State> {
 
       if (token != 'expired') {
         const url = `https://nknfaucet.herokuapp.com/api/values?address=${this.props.address}`;
-        console.log(url);
-
-        // var formBody = `${encodeURIComponent('g-recaptcha-response')}=${encodeURIComponent(token)}`
-        // console.log(formBody);
-
         const request = {
           method: 'POST',
           headers: {
@@ -41,7 +35,7 @@ class Faucet extends React.PureComponent<Props, State> {
         };
 
         console.log(request);
-
+        const {nextScreen} = this.props;
         let res = await fetch(url, request);
         if (!res.ok) {
           console.log(res);
@@ -54,7 +48,7 @@ class Faucet extends React.PureComponent<Props, State> {
             isClaimTx: true,
           };
 
-          this.props.claimFail(payload, this.props.componentId);
+          this.props.claimFail(payload, this.props.componentId, nextScreen);
           return;
         }
 
@@ -70,14 +64,7 @@ class Faucet extends React.PureComponent<Props, State> {
           amount: amount,
         };
 
-        console.log('claim success ', payload);
-
-        this.props.claimSuccess(payload, this.props.componentId);
-
-        //TODO: Add to transactions list
-        // this.props.attemptClaim()
-
-        console.log('end of on message');
+        this.props.claimSuccess(payload, this.props.componentId, nextScreen);
       } else {
         console.log('received token expired message');
       }
@@ -96,18 +83,8 @@ class Faucet extends React.PureComponent<Props, State> {
 
     return (
       <Layout style={{flex: 1, padding: 20}}>
-        {/* <Text
-          category={'h3'}
-          style={{
-            textAlign: 'center',
-          }}>
-          Claim free NKN currency
-        </Text> */}
-
         <RNRecaptcha siteKey={siteKey} onMessage={this.onMessage} url={url} />
       </Layout>
     );
   }
 }
-
-export default Faucet;

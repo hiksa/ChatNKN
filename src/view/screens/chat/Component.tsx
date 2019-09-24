@@ -1,11 +1,5 @@
 import * as React from 'react';
 import {GiftedChat} from 'react-native-gifted-chat';
-import {ScrollView, Text, FlatList} from 'react-native';
-import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/integration/react';
-import store, {persistor} from '../../../../shared/redux/store';
-
-import {CText} from '../../elements/custom';
 
 export interface Props {
   userId: string;

@@ -1,24 +1,8 @@
 import * as React from 'react';
-import {
-  View,
-  TextInput,
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  Dimensions,
-  ViewProps,
-} from 'react-native';
-import {Provider} from 'react-redux';
+import {View, TextInput, ScrollView, StyleSheet, ViewProps} from 'react-native';
 import {Navigation} from 'react-native-navigation';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import {TabView, SceneMap} from 'react-native-tab-view';
-import {PersistGate} from 'redux-persist/integration/react';
-
-import {BUTTON_DEFAULT} from '../../elements/buttons';
-import store, {persistor} from '../../../../shared/redux/store';
-import {CText} from '../../elements/custom';
 import ContactListItem from '../home/contactListItem';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import * as nknWallet from 'nkn-wallet';
 import {
   Button,
@@ -28,7 +12,10 @@ import {
   List,
   Modal,
   Avatar,
+  TabView,
+  Tab,
 } from 'react-native-ui-kitten';
+import {RNCamera, Orientation, RNCameraProps} from 'react-native-camera';
 
 export interface Props {
   userId: string;
@@ -43,15 +30,12 @@ interface State {
   toAddress: string;
   amount: string;
   filteredContacts: any[];
-  index: number;
-  routes: any[];
   modalVisible: boolean;
   selectedContact: any;
+  selectedTab: number;
 }
 
-declare var window: any;
-
-class WalletSend extends React.PureComponent<Props, State> {
+export default class WalletSend extends React.PureComponent<Props, State> {
   constructor(props: any) {
     super(props);
 
@@ -59,13 +43,9 @@ class WalletSend extends React.PureComponent<Props, State> {
       toAddress: '',
       amount: '',
       filteredContacts: [...props.contacts],
-      index: 0,
-      routes: [
-        {key: 'first', title: 'Select Contact'},
-        {key: 'second', title: 'Scan QR'},
-      ],
       modalVisible: false,
       selectedContact: null,
+      selectedTab: 0,
     };
   }
 
@@ -106,6 +86,7 @@ class WalletSend extends React.PureComponent<Props, State> {
   };
 
   onScan = (e: any) => {
+    alert(e);
     console.log(e);
   };
 
@@ -185,7 +166,7 @@ class WalletSend extends React.PureComponent<Props, State> {
           </Modal>
           <Layout style={{padding: 10}} level={'3'}>
             <View>
-              <View style={styles.smallButtonsContainer}>
+              <View style={styles.amountContainer}>
                 <Input
                   style={{flex: 3}}
                   size={'small'}
@@ -195,7 +176,6 @@ class WalletSend extends React.PureComponent<Props, State> {
                   }
                   value={this.state.toAddress}
                 />
-
                 <Input
                   style={{flex: 1, marginLeft: 10}}
                   size={'small'}
@@ -220,12 +200,11 @@ class WalletSend extends React.PureComponent<Props, State> {
                     onPress={this.handleMaxPress}>
                     max
                   </Button>
-
                   <Button
                     status={'primary'}
                     appearance={'outline'}
                     size={'small'}
-                    style={{height: 30, marginRight: 10}}
+                    style={styles.clearButton}
                     disabled={this.state.amount == ''}
                     onPress={() => this.setState({amount: ''})}>
                     x clear
@@ -233,7 +212,6 @@ class WalletSend extends React.PureComponent<Props, State> {
                 </View>
               </View>
             </View>
-
             <View style={styles.buttonsContainer}>
               <Button onPress={this.handleSend} style={{width: 120}}>
                 Confirm
@@ -248,67 +226,73 @@ class WalletSend extends React.PureComponent<Props, State> {
           </Layout>
           <TabView
             style={{marginTop: 40}}
-            navigationState={this.state}
-            renderScene={SceneMap({
-              first: () => (
-                <View>
-                  <ScrollView style={{marginTop: 30}}>
-                    <CText>Select from Contacts</CText>
-                    <TextInput
-                      onChangeText={(text: string) =>
-                        this.setState({
-                          filteredContacts: this.props.contacts.filter(
-                            x =>
-                              x.userId.includes(text) ||
-                              x.address.includes(text) ||
-                              x.username.includes(text),
-                          ),
-                        })
-                      }
-                      placeholder={'Filter contacts'}
-                    />
-
-                    <List
-                      style={{marginTop: 20}}
-                      data={this.state.filteredContacts}
-                      keyExtractor={(item: any) => item.userId}
-                      renderItem={({item}) => (
-                        <ContactListItem
-                          path={item.path}
-                          imageData={item.avatarDataBase64}
-                          handleClick={this.selectContact}
-                          username={item.username}
-                          userId={item.address}
-                          lastMessageText={item.lastMessageText}
-                          lastMessageSent={item.lastMessageSent}
-                          hasUnreadMessages={item.hasUnreadMessages}
-                        />
-                      )}
-                    />
-                  </ScrollView>
-                </View>
-              ),
-              second: () => (
-                <View>
-                  {/* <QRCodeScanner
-                    onRead={this.onScan}
-                    // topContent={
-                    //   <Text style={styles.centerText}>
-                    //     Go to <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on your computer and scan the QR code.
-                    //   </Text>
-                    // }
-                    // bottomContent={
-                    //   <TouchableOpacity style={styles.buttonTouchable}>
-                    //     <Text style={styles.buttonText}>OK. Got it!</Text>
-                    //   </TouchableOpacity>
-                    // }
-                  /> */}
-                </View>
-              ),
-            })}
-            onIndexChange={(index: any) => this.setState({index})}
-            initialLayout={{width: Dimensions.get('window').width}}
-          />
+            selectedIndex={this.state.selectedTab}
+            onSelect={(index: number) => this.setState({selectedTab: index})}>
+            <Tab title="Select Contact">
+              <View>
+                <ScrollView style={{marginTop: 30}}>
+                  <TextInput
+                    onChangeText={(text: string) => {
+                      const lowered = text.toLowerCase();
+                      this.setState({
+                        filteredContacts: this.props.contacts.filter(
+                          x =>
+                            x.userId.toLowerCase().includes(lowered) ||
+                            x.address.toLowerCase().includes(lowered) ||
+                            x.username.toLowerCase().includes(lowered),
+                        ),
+                      });
+                    }}
+                    placeholder={'Filter contacts'}
+                  />
+                  <List
+                    style={{marginTop: 20}}
+                    data={this.state.filteredContacts}
+                    keyExtractor={(item: any) => item.userId}
+                    renderItem={({item}) => (
+                      <ContactListItem
+                        path={item.path}
+                        imageData={item.avatarDataBase64}
+                        handleClick={this.selectContact}
+                        username={item.username}
+                        userId={item.address}
+                        lastMessageText={item.lastMessageText}
+                        lastMessageSent={item.lastMessageSent}
+                        hasUnreadMessages={item.hasUnreadMessages}
+                      />
+                    )}
+                  />
+                </ScrollView>
+              </View>
+            </Tab>
+            <Tab title="Scan QR">
+              <View>
+                <QRCodeScanner
+                  cameraStyle={{
+                    width: 280,
+                    height: 280,
+                    marginTop: 10,
+                    alignSelf: 'center',
+                    justifyContent: 'center',
+                  }}
+                  cameraProps={{ratio: '1:1'}}
+                  onRead={this.onScan}
+                  showMarker={true}
+                  vibrate={true}
+                  // topContent={
+                  //   <Text style={styles.centerText}>
+                  //     Go to <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on your computer and scan the QR code.
+                  //   </Text>
+                  // }
+                  // bottomContent={
+                  //   <TouchableOpacity style={styles.buttonTouchable}>
+                  //     <Text style={styles.buttonText}>OK. Got it!</Text>
+                  //   </TouchableOpacity>
+                  // }
+                />
+              </View>
+            </Tab>
+          </TabView>
         </ScrollView>
       </Layout>
     );
@@ -338,7 +322,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 20,
   },
-  smallButtonsContainer: {
+  amountContainer: {
     flexDirection: 'row',
     paddingBottom: 10,
   },
@@ -355,6 +339,8 @@ const styles = StyleSheet.create({
     padding: 20,
     width: 380,
   },
+  clearButton: {
+    height: 30,
+    marginRight: 10,
+  },
 });
-
-export default WalletSend;

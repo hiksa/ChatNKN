@@ -1,15 +1,13 @@
 import {Navigation} from 'react-native-navigation';
 import {Provider} from 'react-redux';
-import {Decimal} from 'decimal.js';
-
-import store from '../../shared/redux/store';
+import store from '../shared/redux/store';
 import {registerScreens} from '../view/screens';
 import {showSplash} from './navigation';
 
 import {
   purgeStorage,
   rehydrateStore,
-} from '../../shared/redux/actions/actionCreators';
+} from '../shared/redux/actions/actionCreators';
 
 declare var global: any;
 

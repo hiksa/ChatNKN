@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import Component from './Component';
-import {sendAttempt} from '../../../../shared/redux/actions/walletActionCreators';
-import {getAddressFromPubKey} from '../../../../shared/misc/util';
+import {sendAttempt} from '../../../shared/redux/actions/walletActionCreators';
+import {getAddressFromPubKey} from '../../../shared/misc/util';
 
 const mapStateToProps = (state: any) => {
   const {userId} = state.auth.currentUser;

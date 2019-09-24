@@ -1,7 +1,6 @@
 import {connect} from 'react-redux';
-
 import Component from './Component';
-import {logout} from '../../../../shared/redux/actions/authActionCreators';
+import {logout} from '../../../shared/redux/actions/authActionCreators';
 
 const mapStateToProps = (state: any) => {
   const {userId} = state.auth.currentUser;

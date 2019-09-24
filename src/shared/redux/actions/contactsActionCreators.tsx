@@ -1,13 +1,12 @@
 import {ACTION_TYPES} from '../constants/actionTypes';
 import {Navigation} from 'react-native-navigation';
-import {tabbedNavigation} from '../../../src/navigators/navigation';
+import {tabbedNavigation} from '../../../navigators/navigation';
 import {MESSAGE_TYPES} from '../constants/messageTypes';
 import store from '../store';
+import NknService from '../../misc/nkn';
 
 var msgpack = require('msgpack-lite');
 var fs = require('react-native-fs');
-
-declare var window: any;
 
 export const addContactAttempt = (payload: any) => {
   return (dispatch: Function, getState: Function) => {
@@ -30,7 +29,7 @@ export const addContactAttempt = (payload: any) => {
       return;
     }
 
-    const client = window.nknClient;
+    const client = NknService.client;
     const {username} = store.getState().auth.currentUser;
 
     const encodedMessage = msgpack.encode({
@@ -89,7 +88,7 @@ export const acceptInvite = (payload: any) => {
         avatarData: data,
       });
 
-      window.nknClient
+      NknService.client
         .send(payload.contactId, encodedMessage)
         .then(x => console.log(x))
         .catch(e => console.log(e));

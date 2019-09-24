@@ -1,20 +1,6 @@
 import * as React from 'react';
-import {GiftedChat} from 'react-native-gifted-chat';
-import {ScrollView, StyleSheet, View, TextInput} from 'react-native';
-import {Provider} from 'react-redux';
-import {
-  List,
-  ListItem,
-  Button,
-  Text,
-  Layout,
-  Input,
-} from 'react-native-ui-kitten';
-import {PersistGate} from 'redux-persist/integration/react';
-import store, {persistor} from '../../../../shared/redux/store';
-
-import {CText} from '../../elements/custom';
-import {BUTTON_DEFAULT} from '../../elements/buttons';
+import {StyleSheet, View} from 'react-native';
+import {Button, Text, Layout, Input} from 'react-native-ui-kitten';
 import {Navigation} from 'react-native-navigation';
 import {GLOBAL} from '../../styles/global';
 import QRCodeScanner from 'react-native-qrcode-scanner';
@@ -71,7 +57,9 @@ class AddContact extends React.PureComponent<Props, State> {
   };
 
   onScan = (e: any) => {
+    alert(e.data);
     console.log(e);
+    debugger;
   };
 
   getCaption = (text: string) => {
@@ -186,10 +174,23 @@ class AddContact extends React.PureComponent<Props, State> {
             </Button>
           </View>
         </Layout>
-        <Text style={{marginBottom: 30}}>Scan contact id</Text>
-        <View style={{padding: 10}}>
-          {/* <QRCodeScanner
-            onRead={this.onScan}
+        <Text>Scan contact id</Text>
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <QRCodeScanner
+            cameraStyle={{
+              width: 280,
+              height: 280,
+              marginTop: 10,
+              alignSelf: 'center',
+              justifyContent: 'center',
+            }}
+            cameraProps={{
+              ratio: '1:1',
+            }}
+            onRead={this.onScan.bind(this)}
+            showMarker={true}
+            vibrate={true}
+            reactivateTimeout={300}
             // topContent={
             //   <Text style={styles.centerText}>
             //     Go to <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on your computer and scan the QR code.
@@ -200,7 +201,7 @@ class AddContact extends React.PureComponent<Props, State> {
             //     <Text style={styles.buttonText}>OK. Got it!</Text>
             //   </TouchableOpacity>
             // }
-          /> */}
+          />
         </View>
       </Layout>
     );
@@ -229,7 +230,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 20,
-    marginBottom: 20,
   },
 });
 
