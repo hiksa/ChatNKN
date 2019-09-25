@@ -1,4 +1,3 @@
-const nkn = require('nkn-multiclient');
 import configs from './configs';
 const rpcCall = require('nkn-client/lib/rpc');
 import {
@@ -131,6 +130,7 @@ export default class NknService {
     );
 
     const seedNode = configs.seedAddresses[seedNodeIndex];
+    // const seedNode = 'http://64.190.202.140:30003';
     NknService.seedNode = seedNode;
     const seed = wallet.getSeed();
     const client = nknClient({
@@ -150,24 +150,28 @@ export default class NknService {
     client.on('connect', async () => {
       console.log('***CONNECTED!');
 
-      const latestBlock = await rpcCall(seedNode, 'getlatestblockheight');
-      const lastAuditedBlock = store.getState().app.lastAudittedBlock;
-      if (latestBlock > lastAuditedBlock) {
-        const height =
-          lastAuditedBlock == 0 ? latestBlock - 1 : lastAuditedBlock + 1;
+      // const latestBlock = await rpcCall(seedNode, 'getlatestblockheight');
+      // debugger;
+      // const lastAuditedBlock = store.getState().app.lastAudittedBlock;
+      // if (latestBlock > lastAuditedBlock) {
+      //   const height =
+      //     lastAuditedBlock == 0 ? latestBlock - 1 : lastAuditedBlock + 1;
 
-        const transactionHashes = (await rpcCall(
-          seedNode,
-          'getblocktxsbyheight',
-          {height},
-        )).Transactions;
+      //   debugger;
+      //   const transactionHashes = (await rpcCall(
+      //     seedNode,
+      //     'getblocktxsbyheight',
+      //     {height},
+      //   )).Transactions;
 
-        for (let i = 0; i < transactionHashes.length; i++) {
-          const hash = transactionHashes[i];
-          let details = await NknService.auditTransaction(hash);
-          console.log(details);
-        }
-      }
+      //   debugger;
+      //   for (let i = 0; i < transactionHashes.length; i++) {
+      //     const hash = transactionHashes[i];
+      //     let details = await NknService.auditTransaction(hash);
+      //     console.log(details);
+      //     debugger;
+      //   }
+      // }
     });
 
     client.on(
@@ -294,8 +298,10 @@ export default class NknService {
         }
       },
     );
+
     client.on('block', (block: any) => {
       console.log('***BLOCK received', block);
+      alert('block');
       const {transactions} = block;
       const state = getState();
       const savedUsers = state.auth.savedUsers;
@@ -313,14 +319,12 @@ export default class NknService {
 
       for (let i = 0; i < transactions.length; i++) {
         const tx = transactions[i];
-        const unconfirmedTx = unconfirmed.find(x => x.txId == tx.hash);
-
-        if (unconfirmedTx) {
-          debugger;
+        const foundTx = unconfirmed.find(x => x.txId == tx.hash);
+        if (foundTx) {
           const confirmTxPayload = {
-            txId: unconfirmedTx.txId,
-            userId: unconfirmedTx.userId,
-            address: unconfirmedTx.address,
+            txId: foundTx.txId,
+            userId: foundTx.userId,
+            address: foundTx.address,
           };
 
           dispatch(confirmTransaction(confirmTxPayload));
@@ -344,6 +348,7 @@ export default class NknService {
             const addTxPayload = NknService.getAddTxPayload(
               toLocalUser,
               details,
+              tx.hash,
             );
             dispatch(addTransaction(addTxPayload));
           }
@@ -353,6 +358,7 @@ export default class NknService {
             const addTxPayload = NknService.getAddTxPayload(
               fromLocalUser,
               details,
+              tx.hash,
             );
             dispatch(addTransaction(addTxPayload));
           }
@@ -368,7 +374,7 @@ export default class NknService {
     });
   };
 
-  static getAddTxPayload(user: UserPayload, details: any) {
+  static getAddTxPayload(user: UserPayload, details: any, txId: string) {
     const addTxPayload = {
       userId: user.userId,
       change: user.address == details.to ? details.amount : details.amount * -1,
@@ -378,6 +384,7 @@ export default class NknService {
         amount: details.amount,
         success: true,
         confirmed: true,
+        txId,
       },
     };
 

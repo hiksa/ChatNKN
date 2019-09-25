@@ -32,7 +32,6 @@
     "is-number": "^7.0.0",
     "msgpack-lite": "^0.1.26",
     "nkn-client": "^0.6.8",
-    "nkn-multiclient": "0.0.8",
     "nkn-wallet": "^0.4.4",
     "path-browserify": "0.0.0",
     "punycode": "^1.4.1",

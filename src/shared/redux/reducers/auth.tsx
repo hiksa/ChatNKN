@@ -60,6 +60,30 @@ export default (state: State = initialState, action: any): State => {
             ...action.payload,
           },
         },
+        savedUsers: [
+          ...state.savedUsers.map((x: UserPayload) =>
+            x.userId == state.currentUser.userId
+              ? {...x, avatarSource: {...action.payload}}
+              : {...x},
+          ),
+        ],
+      };
+    }
+
+    case ACTION_TYPES.SETTINGS.SET_USERNAME: {
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          username: action.payload,
+        },
+        savedUsers: [
+          ...state.savedUsers.map((x: UserPayload) =>
+            x.userId == state.currentUser.userId
+              ? {...x, username: action.payload}
+              : {...x},
+          ),
+        ],
       };
     }
 

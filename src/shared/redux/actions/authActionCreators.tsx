@@ -139,15 +139,41 @@ export const registerFail = (payload: RegisterPayload) => {
   };
 };
 
-export const setImage = (payload: any) => {
+export const setImage = (payload: any, componentId: string) => {
   return (dispatch: Function, getState: () => AppState) => {
     Toast.show('Avatar updated.', {
       duration: Toast.durations.SHORT,
       position: Toast.positions.TOP,
     });
 
+    Navigation.push(componentId, {
+      component: {
+        name: SCREENS.Tabs.Settings,
+      },
+    });
+
     dispatch({
       type: ACTION_TYPES.SETTINGS.SET_IMAGE,
+      payload,
+    });
+  };
+};
+
+export const setUsername = (payload: any, componentId: string) => {
+  return (dispatch: Function, getState: () => AppState) => {
+    Toast.show('Username updated.', {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.TOP,
+    });
+
+    Navigation.push(componentId, {
+      component: {
+        name: SCREENS.Tabs.Settings,
+      },
+    });
+
+    dispatch({
+      type: ACTION_TYPES.SETTINGS.SET_USERNAME,
       payload,
     });
   };

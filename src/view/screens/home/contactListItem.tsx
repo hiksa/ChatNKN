@@ -39,14 +39,22 @@ export default class ContactListItem extends React.Component<Props, State> {
       : '';
     return (
       <ListItem onPress={this.handleOnClick}>
-        <Avatar source={{uri: 'file://' + this.props.path}} />
+        <Avatar
+          source={
+            this.props.path
+              ? {uri: 'file://' + this.props.path}
+              : require('../../assets/images/avatar.png')
+          }
+        />
         <View style={{flex: 7, marginLeft: 20}}>
           <Text style={{fontWeight: 'bold'}}>{username}</Text>
           <View style={{flex: 1, flexDirection: 'row'}}>
-            <TimeAgo
-              time={lastMessageSent}
-              style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic'}}
-            />
+            {lastMessageSent ? (
+              <TimeAgo
+                time={lastMessageSent}
+                style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic'}}
+              />
+            ) : null}
             <Text style={{fontSize: 12, marginLeft: 10}}>{messageText}</Text>
           </View>
         </View>

@@ -127,7 +127,13 @@ export default class WalletSend extends React.PureComponent<Props, State> {
           <View></View>
         ) : (
           <View style={{marginBottom: 10, flexDirection: 'row'}}>
-            <Avatar source={{uri: 'file://' + contact.path}} />
+            <Avatar
+              source={
+                contact.path
+                  ? {uri: 'file://' + contact.path}
+                  : require('../../assets/images/avatar.png')
+              }
+            />
             <View style={{flex: 7, marginLeft: 15}}>
               <Text>{contact.username}</Text>
             </View>
@@ -214,7 +220,7 @@ export default class WalletSend extends React.PureComponent<Props, State> {
             </View>
             <View style={styles.buttonsContainer}>
               <Button onPress={this.handleSend} style={{width: 120}}>
-                Confirm
+                Next
               </Button>
               <Button
                 appearance={'outline'}

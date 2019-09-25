@@ -24,7 +24,7 @@ interface State {
 const publicKeyLength = 64;
 const allowedCharacters = '0123456789abcdefABCDEF'.split('');
 
-class AddContact extends React.PureComponent<Props, State> {
+export default class AddContact extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -240,5 +240,3 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-
-export default AddContact;

@@ -61,15 +61,20 @@ export default class TransactionListItem extends React.Component<Props, State> {
       <ListItem
         onPress={this.handleItemPressed}
         description={`${formattedDate} - ${amountPrefix} ${formattedAmount} NKN ${addressPrefix} ${destinationAddress}`}>
-        <Avatar
-          source={
-            this.props.isOutgoing
-              ? require('../../assets/images/arrow-left.png')
-              : require('../../assets/images/arrow-right.png')
-          }
-        />
+        <View>
+          <Avatar
+            source={
+              this.props.isOutgoing
+                ? require('../../assets/images/arrow-left.png')
+                : require('../../assets/images/arrow-right.png')
+            }
+          />
+          {this.props.confirmed ? null : (
+            <Text style={{fontStyle: 'italic', fontSize: 8}}>unconfirmed</Text>
+          )}
+        </View>
 
-        <View style={{flex: 7, marginLeft: 20}}>
+        <View style={{flex: 6, marginLeft: 20}}>
           <Text style={{fontWeight: 'bold'}}>
             {this.props.txId.substr(0, 30) + '...'}
           </Text>

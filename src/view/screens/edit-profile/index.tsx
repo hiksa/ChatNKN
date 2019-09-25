@@ -12,10 +12,10 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Function) => {
+const mapDispatchToProps = (dispatch: Function, ownProps: any) => {
   return {
-    setImage: (payload: any, componentId: string) =>
-      dispatch(setImage(payload)),
+    setImage: (payload: any) =>
+      dispatch(setImage(payload, ownProps.componentId)),
   };
 };
 

@@ -22,6 +22,7 @@ import * as Chat from './chat';
 import * as Wallet from './wallet';
 import * as Settings from './settings';
 import * as EditProfile from './edit-profile';
+import * as EditUsername from './edit-username';
 import * as AddContact from './add-contact';
 import * as WalletSend from './wallet-send';
 import * as WalletReceive from './wallet-receive';
@@ -70,4 +71,5 @@ export function registerScreens(redux: any) {
   registerComponent(redux)(SCREENS.Wallet.Receive, WalletReceive.default);
 
   registerComponent(redux)(SCREENS.Settings.Edit, EditProfile.default);
+  registerComponent(redux)(SCREENS.Settings.EditUsername, EditUsername.default);
 }

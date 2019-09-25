@@ -28,6 +28,7 @@ const SCREENS = {
   },
   Settings: {
     Edit: 'EditProfile',
+    EditUsername: 'EditUsername',
   },
 };
 

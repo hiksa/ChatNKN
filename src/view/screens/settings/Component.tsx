@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {View, Text, TouchableHighlight, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import Clipboard from '@react-native-community/react-native-clipboard';
 
 import {goToClaim} from '../../../navigators/navigation';
 import QRCode from 'react-native-qrcode-svg';
-import {Layout, Button} from 'react-native-ui-kitten';
+import {Layout, Button, Avatar} from 'react-native-ui-kitten';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Navigation} from 'react-native-navigation';
 import {SCREENS} from '../../../constants/screen';
@@ -15,6 +15,7 @@ export interface Props {
   logout: Function;
   userId: string;
   username: string;
+  avatarSource: any;
   componentId: string;
 }
 
@@ -54,12 +55,54 @@ export default class Settings extends React.PureComponent<Props, State> {
     });
   };
 
+  handleEditUsername = () => {
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: SCREENS.Settings.EditUsername,
+        options: {
+          topBar: {
+            drawBehind: false,
+            visible: true,
+            title: {
+              text: 'Edit Username',
+            },
+          },
+        },
+      },
+    });
+  };
+
   render() {
     return (
       <ScrollView style={{flex: 1}}>
         <Layout style={{padding: 20}}>
           <Layout level={'3'} style={{padding: 20, paddingBottom: 50}}>
-            <Text style={{textAlign: 'center'}}>{this.props.username}</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginBottom: 20,
+                alignItems: 'center',
+                alignContent: 'center',
+                justifyContent: 'center',
+              }}>
+              <Avatar
+                style={{width: 32, height: 32}}
+                source={
+                  this.props.avatarSource
+                    ? {uri: this.props.avatarSource.uri}
+                    : require('../../assets/images/avatar.png')
+                }
+              />
+              <Text
+                category={'h4'}
+                style={{
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  marginLeft: 10,
+                }}>
+                {this.props.username}
+              </Text>
+            </View>
             <Layout
               level={'3'}
               onStartShouldSetResponder={this.handleCopyUserId}>
@@ -72,19 +115,24 @@ export default class Settings extends React.PureComponent<Props, State> {
               <QRCode value={this.props.userId} size={200} />
             </View>
           </Layout>
-          <Button
-            appearance={'outline'}
-            style={{marginTop: 30}}
-            onPress={() => goToClaim()}>
+          <Button style={{marginTop: 30}} onPress={() => goToClaim()}>
             Claim NKN
           </Button>
-          <Button
-            appearance={'outline'}
-            style={{marginTop: 20}}
-            onPress={this.handleEdit}>
-            Edit Avatar
-          </Button>
-          <Button style={{marginTop: 30}} onPress={() => this.props.logout()}>
+          <View style={{flexDirection: 'row'}}>
+            <Button
+              appearance={'outline'}
+              style={{marginTop: 20, marginRigt: 10, flex: 1}}
+              onPress={this.handleEditUsername}>
+              Edit Username
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={{marginTop: 20, marginLeft: 10, flex: 1}}
+              onPress={this.handleEdit}>
+              Edit Avatar
+            </Button>
+          </View>
+          <Button style={{marginTop: 40}} onPress={() => this.props.logout()}>
             Logout
           </Button>
         </Layout>
